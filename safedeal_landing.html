@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세이프딜 — 카카오톡으로 끝내는 B2B 식자재 수급 · 공동구매 핫딜</title>
+<style>
+  :root {
+    --navy: #1F3864;
+    --navy-deep: #16294a;
+    --blue: #2E5395;
+    --kakao: #FEE500;
+    --kakao-dark: #3C1E1E;
+    --ink: #1c2434;
+    --gray: #5c6779;
+    --line: #e3e8f1;
+    --bg-soft: #f5f8fd;
+    --green: #1d9e6f;
+    --red: #e04b4b;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+    background: #fff;
+    word-break: keep-all;
+  }
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== Header ===== */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--navy); }
+  .logo-mark {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--navy) 55%, var(--blue));
+    color: #fff; display: grid; place-items: center;
+    font-size: 15px; font-weight: 900; letter-spacing: -1px;
+  }
+  .logo small { font-size: 11px; font-weight: 500; color: var(--gray); display: block; line-height: 1.2; }
+  nav ul { display: flex; gap: 28px; list-style: none; font-size: 15px; font-weight: 600; color: #38445a; }
+  nav ul a:hover { color: var(--blue); }
+  .nav-cta {
+    background: var(--kakao); color: var(--kakao-dark);
+    font-weight: 700; font-size: 14px;
+    padding: 9px 16px; border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: filter .15s;
+  }
+  .nav-cta:hover { filter: brightness(.95); }
+  .nav-toggle { display: none; }
+
+  /* ===== Hero ===== */
+  .hero {
+    background:
+      radial-gradient(900px 400px at 85% -10%, rgba(46,83,149,.35), transparent 60%),
+      radial-gradient(700px 380px at -10% 110%, rgba(254,229,0,.14), transparent 55%),
+      linear-gradient(160deg, var(--navy-deep), var(--navy) 60%, #27447c);
+    color: #fff;
+    overflow: hidden;
+  }
+  .hero-inner {
+    display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px;
+    align-items: center; padding: 88px 0 96px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+    font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 100px;
+    margin-bottom: 22px; color: #dbe6ff;
+  }
+  .hero-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--kakao); }
+  .hero h1 { font-size: 44px; line-height: 1.28; font-weight: 850; letter-spacing: -.5px; }
+  .hero h1 .hl { color: var(--kakao); }
+  .hero p.lead { margin: 20px 0 32px; font-size: 18px; color: #c7d4ec; max-width: 520px; }
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-weight: 750; font-size: 16px; padding: 15px 26px; border-radius: 11px;
+    transition: transform .15s, filter .15s;
+  }
+  .btn:hover { transform: translateY(-2px); filter: brightness(.97); }
+  .btn-kakao { background: var(--kakao); color: var(--kakao-dark); }
+  .btn-ghost { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.3); color: #fff; }
+  .hero-note { margin-top: 18px; font-size: 13px; color: #9fb2d6; }
+
+  /* Kakao chat mockup — pure CSS */
+  .phone {
+    width: 340px; margin-left: auto;
+    background: #b2c7dc; border-radius: 26px; padding: 14px 12px 18px;
+    box-shadow: 0 30px 60px rgba(0,0,0,.35);
+    border: 6px solid #0e1c33;
+  }
+  .phone-top {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; color: #24344c; padding: 2px 6px 10px;
+  }
+  .phone-top .ch-dot { width: 26px; height: 26px; border-radius: 8px; background: var(--navy); color:#fff; display:grid; place-items:center; font-size:11px; font-weight:900; }
+  .bubble { max-width: 86%; font-size: 12.5px; line-height: 1.5; margin-bottom: 9px; }
+  .bubble .b-body { background: #fff; border-radius: 4px 12px 12px 12px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .bubble.right { margin-left: auto; }
+  .bubble.right .b-body { background: var(--kakao); border-radius: 12px 4px 12px 12px; }
+  .bubble .b-title { font-weight: 800; font-size: 12px; color: var(--red); margin-bottom: 3px; }
+  .bubble .b-title.ok { color: var(--green); }
+  .chip-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .chip {
+    background: #f2f6fc; border: 1px solid #d4deee; color: var(--blue);
+    font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 100px;
+  }
+  .chip.solid { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .deal-mini { display: flex; justify-content: space-between; align-items: center; background: #fffbe6; border: 1px solid #f4e9ad; border-radius: 8px; padding: 7px 9px; margin-top: 7px; font-size: 11.5px; }
+  .deal-mini b { color: #b3560e; }
+
+  /* ===== Stats ===== */
+  .stats { background: #fff; border-bottom: 1px solid var(--line); }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stat { text-align: center; padding: 34px 12px; }
+  .stat + .stat { border-left: 1px solid var(--line); }
+  .stat b { display: block; font-size: 34px; font-weight: 850; color: var(--navy); letter-spacing: -1px; }
+  .stat span { font-size: 14px; color: var(--gray); font-weight: 600; }
+
+  /* ===== Sections ===== */
+  section { padding: 88px 0; }
+  .sec-soft { background: var(--bg-soft); }
+  .sec-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+  .sec-tag {
+    display: inline-block; font-size: 13px; font-weight: 800; color: var(--blue);
+    background: #e8effb; padding: 5px 14px; border-radius: 100px; margin-bottom: 14px;
+  }
+  .sec-head h2 { font-size: 32px; font-weight: 830; letter-spacing: -.5px; color: var(--navy); line-height: 1.35; }
+  .sec-head p { margin-top: 14px; color: var(--gray); font-size: 16px; }
+
+  /* Features */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px 24px; transition: box-shadow .2s, transform .2s;
+  }
+  .card:hover { box-shadow: 0 14px 34px rgba(31,56,100,.10); transform: translateY(-3px); }
+  .card .icon {
+    width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center;
+    font-size: 22px; margin-bottom: 18px; background: #eef3fb;
+  }
+  .card h3 { font-size: 17.5px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--gray); }
+
+  /* Steps */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; counter-reset: step; }
+  .step { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 22px; position: relative; }
+  .step::before {
+    counter-increment: step; content: "0" counter(step);
+    font-size: 13px; font-weight: 900; color: #fff; background: var(--navy);
+    padding: 4px 11px; border-radius: 100px; display: inline-block; margin-bottom: 14px;
+  }
+  .step h3 { font-size: 16.5px; font-weight: 800; margin-bottom: 6px; color: var(--ink); }
+  .step p { font-size: 13.5px; color: var(--gray); }
+
+  /* ===== Hot deals ===== */
+  .deals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .deal {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; display: flex; flex-direction: column;
+    transition: box-shadow .2s, transform .2s;
+  }
+  .deal:hover { box-shadow: 0 16px 38px rgba(31,56,100,.12); transform: translateY(-3px); }
+  .deal-top { padding: 22px 22px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .deal-emoji { font-size: 38px; line-height: 1; }
+  .tag-hot { background: #ffe9e3; color: #d13c1e; font-size: 12px; font-weight: 800; padding: 4px 11px; border-radius: 100px; }
+  .tag-close { background: #eef1f6; color: #6b7689; }
+  .deal-body { padding: 14px 22px 22px; flex: 1; display: flex; flex-direction: column; }
+  .deal-body h3 { font-size: 18px; font-weight: 800; }
+  .deal-body .spec { font-size: 13px; color: var(--gray); margin: 3px 0 14px; }
+  .price-row { display: flex; align-items: baseline; gap: 9px; margin-bottom: 16px; }
+  .price-row .off { font-size: 20px; font-weight: 900; color: var(--red); }
+  .price-row .now { font-size: 21px; font-weight: 850; color: var(--ink); }
+  .price-row .was { font-size: 13.5px; color: #a3adbd; text-decoration: line-through; }
+  .bar { height: 9px; border-radius: 100px; background: #edf1f7; overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--blue), var(--navy)); }
+  .bar-meta { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--gray); margin-top: 7px; font-weight: 600; }
+  .bar-meta b { color: var(--blue); }
+  .deal-cta {
+    margin-top: 18px; text-align: center; font-weight: 800; font-size: 14.5px;
+    background: var(--kakao); color: var(--kakao-dark); border-radius: 9px; padding: 12px;
+  }
+  .deal-cta.gray { background: #eef1f6; color: #8a93a5; }
+
+  /* ===== Safety-Lead band ===== */
+  .band {
+    background: linear-gradient(150deg, var(--navy-deep), var(--navy));
+    color: #fff; border-radius: 20px; padding: 54px 56px;
+    display: grid; grid-template-columns: 1.1fr .9fr; gap: 44px; align-items: center;
+  }
+  .band h2 { font-size: 28px; font-weight: 830; line-height: 1.4; letter-spacing: -.4px; }
+  .band h2 .hl { color: var(--kakao); }
+  .band p { margin-top: 14px; color: #c3d1ea; font-size: 15.5px; }
+  .band ul { margin-top: 20px; list-style: none; display: grid; gap: 11px; }
+  .band ul li { display: flex; gap: 10px; font-size: 14.5px; color: #e6edf9; }
+  .band ul li::before { content: "✓"; color: var(--kakao); font-weight: 900; }
+  .flow { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); border-radius: 16px; padding: 26px; }
+  .flow-item { display: flex; gap: 14px; align-items: flex-start; }
+  .flow-item .f-ic {
+    width: 38px; height: 38px; flex: none; border-radius: 10px; display: grid; place-items: center;
+    background: rgba(254,229,0,.15); font-size: 18px;
+  }
+  .flow-item h4 { font-size: 14.5px; font-weight: 800; }
+  .flow-item p { font-size: 12.5px; color: #b6c5e2; margin: 2px 0 0; }
+  .flow-arrow { margin: 6px 0 6px 18px; color: #7d92bb; font-size: 15px; }
+
+  /* ===== Partner ===== */
+  .partner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 44px; }
+  .partner-grid .card .icon { background: #fff6d6; }
+  .partner-cta-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: stretch;
+  }
+  .partner-login {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 34px 32px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .partner-login h3 { font-size: 20px; font-weight: 830; color: var(--navy); margin-bottom: 8px; }
+  .partner-login p { font-size: 14px; color: var(--gray); margin-bottom: 22px; }
+  .btn-navy { background: var(--navy); color: #fff; justify-content: center; }
+  .btn-line { border: 1.5px solid var(--navy); color: var(--navy); justify-content: center; margin-top: 10px; }
+
+  /* Form */
+  form.apply {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 34px 32px;
+  }
+  form.apply h3 { font-size: 20px; font-weight: 830; color: var(--navy); margin-bottom: 20px; }
+  .field { margin-bottom: 15px; }
+  .field label { display: block; font-size: 13.5px; font-weight: 750; margin-bottom: 6px; color: #38445a; }
+  .field input, .field select, .field textarea {
+    width: 100%; border: 1.5px solid #d8e0ec; border-radius: 9px;
+    padding: 11px 13px; font-size: 14.5px; font-family: inherit; color: var(--ink);
+    background: #fbfcfe; outline: none; transition: border-color .15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); background: #fff; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  form .btn { width: 100%; justify-content: center; margin-top: 6px; border: none; cursor: pointer; font-family: inherit; }
+
+  /* ===== Footer ===== */
+  footer { background: #10203c; color: #92a3c4; padding: 52px 0 40px; font-size: 13.5px; }
+  .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 36px; margin-bottom: 34px; }
+  .foot-grid h4 { color: #fff; font-size: 14px; font-weight: 800; margin-bottom: 12px; }
+  .foot-grid ul { list-style: none; display: grid; gap: 8px; }
+  .foot-grid a:hover { color: #fff; }
+  .foot-logo { color: #fff; font-weight: 850; font-size: 18px; margin-bottom: 10px; }
+  .foot-bottom { border-top: 1px solid #22345a; padding-top: 22px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: #6d7fa3; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 960px) {
+    .hero-inner { grid-template-columns: 1fr; padding: 60px 0 70px; }
+    .phone { margin: 0 auto; }
+    .hero h1 { font-size: 34px; }
+    .grid-4, .steps { grid-template-columns: repeat(2, 1fr); }
+    .deals { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(3) { border-left: none; }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .band { grid-template-columns: 1fr; padding: 40px 30px; }
+    .partner-grid { grid-template-columns: 1fr; }
+    .partner-cta-wrap { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    nav ul { display: none; }
+  }
+  @media (max-width: 560px) {
+    .grid-4, .steps, .stats-row { grid-template-columns: 1fr; }
+    .stat + .stat { border-left: none; border-top: 1px solid var(--line); }
+    .field-row { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 29px; }
+    section { padding: 64px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= Header ================= -->
+<header>
+  <div class="container nav">
+    <a class="logo" href="#">
+      <span class="logo-mark">SD</span>
+      <span>세이프딜<small>㈜한국표준분석연구원</small></span>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="#features">서비스 소개</a></li>
+        <li><a href="#safety">세이프티 리드</a></li>
+        <li><a href="#deals">공동구매 핫딜</a></li>
+        <li><a href="#partner">파트너 제휴</a></li>
+      </ul>
+    </nav>
+    <a class="nav-cta" href="#apply">💬 카카오톡 채널 추가</a>
+  </div>
+</header>
+
+<!-- ================= Hero ================= -->
+<div class="hero">
+  <div class="container hero-inner">
+    <div>
+      <span class="hero-badge">식품검사 × 스마트 HACCP × 카카오톡 챗봇 연동 SCM 플랫폼</span>
+      <h1>앱 설치 없이,<br><span class="hl">카카오톡</span>으로 끝내는<br>식자재 발주와 공동구매</h1>
+      <p class="lead">
+        검사 결과와 HACCP 기록이 알려주는 교체·소진 시점에 맞춰
+        안전 검증된 식자재를 최저가 공동구매로. 주문부터 콜드체인 배송까지 24시간 안에 끝냅니다.
+      </p>
+      <div class="hero-btns">
+        <a class="btn btn-kakao" href="#apply">💬 카카오톡으로 시작하기</a>
+        <a class="btn btn-ghost" href="#partner">파트너 제휴 문의 →</a>
+      </div>
+      <p class="hero-note">* 별도 회원가입·앱 설치 없이 채널 추가만으로 이용할 수 있습니다.</p>
+    </div>
+
+    <!-- CSS-only Kakao chat mockup -->
+    <div class="phone" role="img" aria-label="카카오톡 챗봇 발주 화면 예시">
+      <div class="phone-top"><span class="ch-dot">SD</span> 세이프딜 · B2B 식자재 채널</div>
+
+      <div class="bubble">
+        <div class="b-body">
+          <div class="b-title">⚠️ 원재료 교체 권고</div>
+          고춧가루(중국산 A등급) 검사 결과, <b>잔류농약 기준 근접</b>이 확인됐어요.
+          안전 검증된 대체재를 추천드릴게요.
+          <div class="chip-row"><span class="chip solid">대체재 보기</span><span class="chip">검사 리포트</span></div>
+        </div>
+      </div>
+
+      <div class="bubble">
+        <div class="b-body">
+          <div class="b-title ok">✅ 안전 검증 대체재</div>
+          <b>국산 고춧가루 (검사적합 · 재고 보유)</b><br>
+          20kg × 30포 · 내일 오전 도착 가능
+          <div class="deal-mini"><span>지금 공동구매 진행 중</span><b>-18%</b></div>
+          <div class="chip-row"><span class="chip solid">즉시 발주</span><span class="chip">핫딜 참여</span></div>
+        </div>
+      </div>
+
+      <div class="bubble right">
+        <div class="b-body">핫딜 참여할게요. 30포 발주해 주세요.</div>
+      </div>
+
+      <div class="bubble">
+        <div class="b-body">
+          <div class="b-title ok">🚚 주문 확정</div>
+          결제가 완료됐어요. 저온 물류 거점에서 <b>24시간 내</b> 배송됩니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= Stats ================= -->
+<div class="stats">
+  <div class="container stats-row">
+    <div class="stat"><b>500+</b><span>가동 중인 B2B 거래처</span></div>
+    <div class="stat"><b>24시간</b><span>주문 → 콜드체인 배송 완료</span></div>
+    <div class="stat"><b>10년+</b><span>식자재 유통·물류 노하우</span></div>
+    <div class="stat"><b>0원</b><span>앱 설치·가입·이용 장벽</span></div>
+  </div>
+</div>
+
+<!-- ================= Features ================= -->
+<section id="features">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag">SERVICE</span>
+      <h2>데이터가 감지하고, 카카오톡이 알리고,<br>물류가 실행합니다</h2>
+      <p>식품 제조 공장과 외식업체를 위한 데이터·안전·물류 통합 SCM 서비스입니다.</p>
+    </div>
+    <div class="grid-4">
+      <div class="card">
+        <div class="icon">🧪</div>
+        <h3>세이프티 리드 알림</h3>
+        <p>식품검사 결과·스마트 HACCP 기록을 분석해 부적합 우려와 원재료 소진 시점을 먼저 알려드립니다.</p>
+      </div>
+      <div class="card">
+        <div class="icon">💬</div>
+        <h3>카카오톡 즉시 발주</h3>
+        <p>‘검사 확인’, ‘즉시 발주’ 버튼만 누르면 끝. 현장 작업자가 별도 교육 없이 바로 쓸 수 있습니다.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🔥</div>
+        <h3>공동구매 핫딜</h3>
+        <p>고추장·간장 등 대량 소비 품목을 수요 통합 + 바잉 파워로 시장가보다 확실히 낮은 단가에 공급합니다.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🚚</div>
+        <h3>24시간 콜드체인 배송</h3>
+        <p>자체 저온 물류 거점과 배송망으로 주문부터 입고까지 24시간 안에 완료합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Safety-Lead band ================= -->
+<section id="safety" class="sec-soft" style="padding-top:0; padding-bottom:88px;">
+  <div class="container" style="padding-top:88px;">
+    <div class="band">
+      <div>
+        <h2>발주 타이밍을 놓치면<br>생산 라인이 멈춥니다.<br><span class="hl">세이프딜은 먼저 움직입니다.</span></h2>
+        <p>안전 관리와 수급이 따로 놀던 현장을 하나로 연결했습니다.
+          검사기관·HACCP 데이터가 위험 신호를 보내는 순간, 대체재 추천과 발주 버튼이 카카오톡으로 도착합니다.</p>
+        <ul>
+          <li>부적합 우려 원재료 자동 감지 및 안전 검증 대체재 추천</li>
+          <li>생산 기록 기반 재고 소진 예측 → D-day 전 발주 알림</li>
+          <li>파트너 검사기관·HACCP 솔루션과 실시간 API 연동</li>
+        </ul>
+      </div>
+      <div class="flow">
+        <div class="flow-item">
+          <span class="f-ic">📊</span>
+          <div><h4>데이터 감지</h4><p>검사 결과 · HACCP 기록 · ERP 재고 실시간 분석</p></div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item">
+          <span class="f-ic">🔔</span>
+          <div><h4>카카오톡 알림</h4><p>교체 권고 · 소진 임박 · 핫딜 오픈 푸시</p></div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item">
+          <span class="f-ic">🛒</span>
+          <div><h4>버튼 한 번 발주</h4><p>대화형 발주 · 공동구매 참여 · 간편 결제</p></div>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item">
+          <span class="f-ic">🚚</span>
+          <div><h4>24시간 내 배송</h4><p>자체 저온 거점 출고 → 콜드체인 직배송</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Hot deals ================= -->
+<section id="deals">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag">HOT DEAL</span>
+      <h2>지금 진행 중인 공동구매 핫딜</h2>
+      <p>목표 수량이 모이면 확정! 참여 공장이 많을수록 단가는 더 내려갑니다.</p>
+    </div>
+    <div class="deals">
+      <div class="deal">
+        <div class="deal-top"><span class="deal-emoji">🌶️</span><span class="tag-hot">마감 임박</span></div>
+        <div class="deal-body">
+          <h3>태양초 고추장 14kg</h3>
+          <p class="spec">말통 · HACCP 인증 제조사 · 검사적합</p>
+          <div class="price-row"><span class="off">-22%</span><span class="now">41,900원</span><span class="was">53,800원</span></div>
+          <div class="bar"><i style="width:87%"></i></div>
+          <div class="bar-meta"><span><b>87%</b> 달성 · 261/300박스</span><span>오늘 18:00 마감</span></div>
+          <a class="deal-cta" href="#apply">카카오톡으로 참여하기</a>
+        </div>
+      </div>
+      <div class="deal">
+        <div class="deal-top"><span class="deal-emoji">🫗</span><span class="tag-hot">진행 중</span></div>
+        <div class="deal-body">
+          <h3>양조간장 15L</h3>
+          <p class="spec">말통 · 대용량 업소용 · 검사적합</p>
+          <div class="price-row"><span class="off">-18%</span><span class="now">28,400원</span><span class="was">34,600원</span></div>
+          <div class="bar"><i style="width:54%"></i></div>
+          <div class="bar-meta"><span><b>54%</b> 달성 · 162/300박스</span><span>D-2 마감</span></div>
+          <a class="deal-cta" href="#apply">카카오톡으로 참여하기</a>
+        </div>
+      </div>
+      <div class="deal">
+        <div class="deal-top"><span class="deal-emoji">🍜</span><span class="tag-hot tag-close">오픈 예정</span></div>
+        <div class="deal-body">
+          <h3>업소용 물엿 10kg</h3>
+          <p class="spec">이온엿 · 소스 제조용 · 검사 진행 중</p>
+          <div class="price-row"><span class="off">-15%</span><span class="now">14,900원</span><span class="was">17,500원</span></div>
+          <div class="bar"><i style="width:0%"></i></div>
+          <div class="bar-meta"><span>7/28(화) 10:00 오픈</span><span>알림 신청 가능</span></div>
+          <a class="deal-cta gray" href="#apply">오픈 알림 받기</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= How it works ================= -->
+<section class="sec-soft">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag">HOW IT WORKS</span>
+      <h2>시작은 채널 추가 한 번이면 충분합니다</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>카카오톡 채널 추가</h3><p>‘세이프딜’ 채널을 추가하고 사업자 정보를 한 번만 등록합니다.</p></div>
+      <div class="step"><h3>데이터 연결</h3><p>이용 중인 검사기관·스마트 HACCP·ERP 정보를 연결하면 맞춤 알림이 시작됩니다.</p></div>
+      <div class="step"><h3>알림 받고 발주</h3><p>교체·소진·핫딜 알림을 받고 버튼 한 번으로 발주와 결제를 완료합니다.</p></div>
+      <div class="step"><h3>24시간 내 입고</h3><p>저온 물류 거점에서 콜드체인으로 배송, 카카오톡에서 배송 현황을 확인합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Partner ================= -->
+<section id="partner">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag">PARTNERSHIP</span>
+      <h2>검사기관·스마트 HACCP 솔루션사를 위한<br>새로운 수익 모델</h2>
+      <p>솔루션 변경 없이 API 플러그인만으로 발주 기능을 탑재하고, 실거래 기반 수수료를 정산받으세요.</p>
+    </div>
+    <div class="partner-grid">
+      <div class="card">
+        <div class="icon">🔌</div>
+        <h3>플러그인 연동</h3>
+        <p>표준 REST API 가이드 제공. 기존 시스템 변경 없이 챗봇 발주 기능을 그대로 결합합니다.</p>
+      </div>
+      <div class="card">
+        <div class="icon">💰</div>
+        <h3>트랜잭션 수수료 공유</h3>
+        <p>내 고객이 플랫폼에서 발주할 때마다 거래 수수료가 정산됩니다. 유지보수료 외 신규 수익원이 생깁니다.</p>
+      </div>
+      <div class="card">
+        <div class="icon">📈</div>
+        <h3>실시간 정산 대시보드</h3>
+        <p>유입 고객의 거래 실적과 수수료를 전용 대시보드에서 실시간으로 확인하고 월별 정산서를 받아보세요.</p>
+      </div>
+    </div>
+
+    <div class="partner-cta-wrap">
+      <!-- 제휴 신청 폼 -->
+      <form class="apply" id="apply" action="#" method="post">
+        <h3>파트너 제휴 · 서비스 도입 문의</h3>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-company">회사명</label>
+            <input id="f-company" type="text" name="company" placeholder="예) OO식품 / OO검사원" required>
+          </div>
+          <div class="field">
+            <label for="f-type">구분</label>
+            <select id="f-type" name="type">
+              <option>식품 제조사 (서비스 이용)</option>
+              <option>외식업체 (서비스 이용)</option>
+              <option>식품검사기관 (파트너 제휴)</option>
+              <option>스마트 HACCP 솔루션사 (파트너 제휴)</option>
+              <option>ERP/MES 솔루션사 (파트너 제휴)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-name">담당자명</label>
+            <input id="f-name" type="text" name="name" placeholder="홍길동" required>
+          </div>
+          <div class="field">
+            <label for="f-phone">연락처</label>
+            <input id="f-phone" type="tel" name="phone" placeholder="010-0000-0000" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-msg">문의 내용</label>
+          <textarea id="f-msg" name="message" rows="3" placeholder="이용 중인 시스템, 주요 취급 품목 등을 알려주시면 빠르게 안내드립니다."></textarea>
+        </div>
+        <button class="btn btn-kakao" type="submit">문의 접수하기</button>
+      </form>
+
+      <!-- 파트너 대시보드 진입 -->
+      <div class="partner-login">
+        <h3>이미 파트너이신가요?</h3>
+        <p>파트너 전용 정산 대시보드에서 유입 거래 실적, 수수료 정산 내역, 월별 정산서를 확인할 수 있습니다.</p>
+        <a class="btn btn-navy" href="#">파트너 대시보드 로그인</a>
+        <a class="btn btn-line" href="#">API 연동 가이드 보기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Footer ================= -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo">세이프딜 SafeDeal</div>
+        <p>식품검사·스마트 HACCP 데이터와 카카오톡 챗봇을 연동한<br>B2B 식자재 수급 최적화 및 공동구매 핫딜 SCM 플랫폼</p>
+      </div>
+      <div>
+        <h4>서비스</h4>
+        <ul>
+          <li><a href="#features">서비스 소개</a></li>
+          <li><a href="#deals">공동구매 핫딜</a></li>
+          <li><a href="#safety">세이프티 리드</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>파트너</h4>
+        <ul>
+          <li><a href="#partner">제휴 문의</a></li>
+          <li><a href="#">정산 대시보드</a></li>
+          <li><a href="#">API 연동 가이드</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>㈜한국표준분석연구원 (KISA) · 대구광역시 북구 · 사업자등록 준비 중</span>
+      <span>© 2026 SafeDeal. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
