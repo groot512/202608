@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(주)한국표준분석연구원 - B2B 식자재 SCM 플랫폼 시스템 구성도</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans KR -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kakao: '#FEE500',
+                        kakaoDark: '#191919',
+                        brandBlue: '#1E40AF',
+                        brandAccent: '#0284C7',
+                        safetyGreen: '#059669',
+                        warnAmber: '#D97706',
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbars and pulse effects */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .chat-bubble-left::after {
+            content: ''; position: absolute; left: -8px; top: 12px;
+            border-width: 6px 8px 6px 0; border-style: solid;
+            border-color: transparent #ffffff transparent transparent;
+        }
+        .chat-bubble-right::after {
+            content: ''; position: absolute; right: -8px; top: 12px;
+            border-width: 6px 0 6px 8px; border-style: solid;
+            border-color: transparent transparent transparent #FEE500;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Top Header & Navigation -->
+    <header class="bg-slate-800/90 border-b border-slate-700/80 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & System Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-blue-500/30">
+                        K
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">2026 재도전성공패키지</span>
+                            <span class="text-xs text-slate-400">(주)한국표준분석연구원</span>
+                        </div>
+                        <h1 class="text-base font-bold text-white tracking-tight">Safe-Supply Smart Hub SCM 플랫폼 시스템 상세 설계</h1>
+                    </div>
+                </div>
+
+                <!-- Live System Indicator -->
+                <div class="hidden md:flex items-center gap-4 text-xs">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-700">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-300">카카오톡 비즈니스 API: <strong class="text-emerald-400">연동 정상</strong></span>
+                    </div>
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-700">
+                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                        <span class="text-slate-300">스마트 HACCP / DB 어댑터: <strong class="text-blue-400">동기화 완료</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation Navigation Buttons -->
+            <div class="flex space-x-1 border-t border-slate-700/50 pt-2 overflow-x-auto scrollbar-none">
+                <button onclick="switchTab('arch')" id="tab-arch" class="tab-btn px-4 py-2 text-sm font-semibold rounded-t-lg transition-all flex items-center gap-2 border-b-2 border-blue-500 text-blue-400 bg-slate-800">
+                    <i class="fa-solid fa-sitemap"></i> 1. 시스템 전체 구성도
+                </button>
+                <button onclick="switchTab('chatbot')" id="tab-chatbot" class="tab-btn px-4 py-2 text-sm font-semibold rounded-t-lg transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-comment-dots text-yellow-400"></i> 2. 카카오톡 챗봇 UI & 시나리오
+                </button>
+                <button onclick="switchTab('safety')" id="tab-safety" class="tab-btn px-4 py-2 text-sm font-semibold rounded-t-lg transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-microscope text-emerald-400"></i> 3. 검사/HACCP 연동 엔진
+                </button>
+                <button onclick="switchTab('group')" id="tab-group" class="tab-btn px-4 py-2 text-sm font-semibold rounded-t-lg transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-boxes-packing text-amber-400"></i> 4. B2B 공동구매 핫딜 엔진
+                </button>
+                <button onclick="switchTab('admin')" id="tab-admin" class="tab-btn px-4 py-2 text-sm font-semibold rounded-t-lg transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-chart-line text-purple-400"></i> 5.통합 대시보드 & 물류 실행
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: SYSTEM ARCHITECTURE VIEW -->
+        <section id="view-arch" class="tab-content block space-y-6">
+            <!-- Architectural Banner -->
+            <div class="bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-slate-800 p-6 rounded-2xl border border-blue-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-blue-400"></i> Safe-Supply SCM 플랫폼 계층별 시스템 아키텍처
+                    </h2>
+                    <p class="text-sm text-slate-300 mt-1">
+                        현장 작업자의 사용성을 극대화한 <strong>카카오톡 Front-end</strong>, <strong>안전검사/HACCP 미들웨어 Engine</strong>, 그리고 <strong>24시간 내 배송 수직계열화 SCM/Logistics</strong>의 4계층 연동 구조
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 text-xs rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                        <i class="fa-solid fa-check"></i> 500개 거래처 수용
+                    </span>
+                    <span class="px-3 py-1 text-xs rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 flex items-center gap-1">
+                        <i class="fa-solid fa-bolt"></i> Zero-App 설치
+                    </span>
+                </div>
+            </div>
+
+            <!-- Visual Flow Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                
+                <!-- Layer 1: Interface Layer -->
+                <div class="bg-slate-800/80 rounded-xl p-5 border border-slate-700 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-full border border-yellow-400/20">LAYER 1</span>
+                            <i class="fa-solid fa-mobile-screen text-yellow-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">인터페이스 계층 (Interface)</h3>
+                        <p class="text-xs text-slate-400 mb-4">현장 사용자의 앱 설치 허들을 제거한 국민 메신저 접점</p>
+                        
+                        <div class="space-y-2.5 text-xs">
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80 hover:border-yellow-400/50 transition">
+                                <div class="font-semibold text-yellow-300 flex items-center gap-2">
+                                    <i class="fa-comment text-yellow-400"></i> 카카오 비즈니스 챗봇 API
+                                </div>
+                                <p class="text-slate-400 mt-1">실시간 발주 알림, 재고 조회, 대화형 커스텀 시나리오, 1초 승인 결제</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-bell text-blue-400"></i> 카카오 알림톡 / 친구톡 Push
+                                </div>
+                                <p class="text-slate-400 mt-1">검사 부적합/원료 소진 시 자동 푸시, B2B 타겟 핫딜 공지</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-desktop text-purple-400"></i> 파트너/관리자 Web Portal
+                                </div>
+                                <p class="text-slate-400 mt-1">스마트 HACCP/검사기관 정산 대시보드 및 수수료 배분 내역 확인</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-700/60 text-center text-xs text-slate-500">
+                        Webhook & REST Protocol
+                    </div>
+                </div>
+
+                <!-- Layer 2: API & Middleware Layer -->
+                <div class="bg-slate-800/80 rounded-xl p-5 border border-blue-500/30 shadow-lg flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-xl pointer-events-none"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold text-blue-400 bg-blue-400/10 px-2.5 py-1 rounded-full border border-blue-400/20">LAYER 2</span>
+                            <i class="fa-solid fa-plug-circle-bolt text-blue-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">미들웨어 & API 계층</h3>
+                        <p class="text-xs text-slate-400 mb-4">검사 DB 및 HACCP 솔루션과 당사 플랫폼을 잇는 Plug-in 어댑터</p>
+
+                        <div class="space-y-2.5 text-xs">
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-blue-500/30">
+                                <div class="font-semibold text-blue-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-microscope text-emerald-400"></i> 식품검사 DB 수집 어댑터
+                                </div>
+                                <p class="text-slate-400 mt-1">자가품질검사 성분 분석 데이터 파싱, 부적합 기준치 감지 알고리즘</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-cloud-arrow-down text-sky-400"></i> 스마트 HACCP ERP/MES Plug-in
+                                </div>
+                                <p class="text-slate-400 mt-1">CCP 입출고 기록 실시간 동기화 및 원자재 소진 리드타임 자동 산출</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-halved text-emerald-400"></i> OAuth 2.0 & 데이터 정합성 검증
+                                </div>
+                                <p class="text-slate-400 mt-1">제휴 솔루션사별 보안 인증, 정산 수수료 트랜잭션 기록 엔진</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-700/60 text-center text-xs text-slate-500">
+                        JSON RESTful / Queue Broker
+                    </div>
+                </div>
+
+                <!-- Layer 3: Core Logic & Recommendation Engine -->
+                <div class="bg-slate-800/80 rounded-xl p-5 border border-slate-700 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-full border border-emerald-400/20">LAYER 3</span>
+                            <i class="fa-solid fa-gears text-emerald-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">핵심 코어 비즈니스 로직</h3>
+                        <p class="text-xs text-slate-400 mb-4">대표자 10년 노하우가 내재화된 데이터 분석 & SCM 추천 알고리즘</p>
+
+                        <div class="space-y-2.5 text-xs">
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-emerald-500/30">
+                                <div class="font-semibold text-emerald-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-rotate text-emerald-400"></i> 세이프티 리드 대체재 추천
+                                </div>
+                                <p class="text-slate-400 mt-1">부적합 원료 발생 즉시 검증된 대체 원부자재(동일 규격) 즉시 자동 매칭</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-amber-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-calculator text-amber-400"></i> B2B 공동구매 수요 집계 엔진
+                                </div>
+                                <p class="text-slate-400 mt-1">고추장·간장 등 다빈도 소비 품목의 지역별 주문 수량 집계 및 원가 절감 단가 산출</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-line text-purple-400"></i> 수요 예측 & VMI 재고 알고리즘
+                                </div>
+                                <p class="text-slate-400 mt-1">제조사별 소비 패턴 예측을 통한 적정 안전재고 유지 및 발주 주기 자동화</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-700/60 text-center text-xs text-slate-500">
+                        Direct Core Controller Logic
+                    </div>
+                </div>
+
+                <!-- Layer 4: Fulfillment & Physical Logistics Layer -->
+                <div class="bg-slate-800/80 rounded-xl p-5 border border-purple-500/30 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold text-purple-400 bg-purple-400/10 px-2.5 py-1 rounded-full border border-purple-400/20">LAYER 4</span>
+                            <i class="fa-solid fa-truck-ramp-box text-purple-400 text-lg"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">물류 & 풀필먼트 실행 계층</h3>
+                        <p class="text-xs text-slate-400 mb-4">24시간 내 배송을 완성하는 자체 대구 저온 물류 인프라</p>
+
+                        <div class="space-y-2.5 text-xs">
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-purple-500/30">
+                                <div class="font-semibold text-purple-300 flex items-center gap-2">
+                                    <i class="fa-solid fa-warehouse text-purple-400"></i> 자체 저온 물류 센터 (대구 거점)
+                                </div>
+                                <p class="text-slate-400 mt-1">콜드체인 저장고, 바잉 파워 기반 주요 원부자재 대량 선매입 보관</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-truck-cold text-sky-400"></i> 수직 계열화 배송망 (WMS/TMS)
+                                </div>
+                                <p class="text-slate-400 mt-1">주문 수신 후 24시간 내 영남권 500개 공장 직배송 및 온도 이력 관리</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/90 rounded-lg border border-slate-700/80">
+                                <div class="font-semibold text-slate-200 flex items-center gap-2">
+                                    <i class="fa-solid fa-handshake text-emerald-400"></i> 제조사 직접 연동 파이프라인
+                                </div>
+                                <p class="text-slate-400 mt-1">대형 소스/원료 제조사(샘표, 대상 등) 유통 단가 절감 직거래망</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-700/60 text-center text-xs text-slate-500">
+                        Physical Cold-Chain Logistics
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Detailed Architecture Workflow Diagrams -->
+            <div class="bg-slate-800/60 rounded-xl p-6 border border-slate-700">
+                <h3 class="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-diagram-project text-blue-400"></i> 데이터 트랜잭션 & 수직계열화 SCM 워크플로우
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-center">
+                    <div class="p-3 bg-slate-900 rounded-lg border border-slate-700">
+                        <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mx-auto mb-2 text-sm font-bold">1</div>
+                        <div class="text-xs font-bold text-white mb-1">검사/HACCP 데이터 감지</div>
+                        <p class="text-[11px] text-slate-400">자가품질검사 부적합 우려 또는 원자재 소진 감지</p>
+                    </div>
+                    <div class="hidden md:flex items-center justify-center text-slate-600">
+                        <i class="fa-solid fa-arrow-right text-lg"></i>
+                    </div>
+                    <div class="p-3 bg-slate-900 rounded-lg border border-yellow-500/30">
+                        <div class="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-400 flex items-center justify-center mx-auto mb-2 text-sm font-bold">2</div>
+                        <div class="text-xs font-bold text-yellow-300 mb-1">카카오 알림톡 푸시</div>
+                        <p class="text-[11px] text-slate-400">현장 작업자 카카오톡으로 세이프티 알림 & 원가절감 핫딜 발송</p>
+                    </div>
+                    <div class="hidden md:flex items-center justify-center text-slate-600">
+                        <i class="fa-solid fa-arrow-right text-lg"></i>
+                    </div>
+                    <div class="p-3 bg-slate-900 rounded-lg border border-emerald-500/30">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 text-sm font-bold">3</div>
+                        <div class="text-xs font-bold text-emerald-300 mb-1">1초 대화형 발주/결제</div>
+                        <p class="text-[11px] text-slate-400">별도 앱 설치 없이 카카오 챗봇 인터페이스로 즉시 확정</p>
+                    </div>
+                    <div class="hidden md:flex items-center justify-center text-slate-600">
+                        <i class="fa-solid fa-arrow-right text-lg"></i>
+                    </div>
+                    <div class="p-3 bg-slate-900 rounded-lg border border-purple-500/30">
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center mx-auto mb-2 text-sm font-bold">4</div>
+                        <div class="text-xs font-bold text-purple-300 mb-1">24시간 저온 배송</div>
+                        <p class="text-[11px] text-slate-400">대구 물류거점에서 주문 수신 즉시 당일/익일 출고 배송</p>
+                    </div>
+                    <div class="hidden md:flex items-center justify-center text-slate-600">
+                        <i class="fa-solid fa-arrow-right text-lg"></i>
+                    </div>
+                    <div class="p-3 bg-slate-900 rounded-lg border border-sky-500/30">
+                        <div class="w-8 h-8 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center mx-auto mb-2 text-sm font-bold">5</div>
+                        <div class="text-xs font-bold text-sky-300 mb-1">파트너 정산 배분</div>
+                        <p class="text-[11px] text-slate-400">HACCP/검사기관 시스템사에 거래 중개 수수료 자동 정산</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: KAKAOTALK CHATBOT SIMULATOR -->
+        <section id="view-chatbot" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Options / Simulator Control Panel -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                        <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-yellow-400"></i> 카카오톡 시나리오 테스트 컨트롤러
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-4">
+                            버튼을 클릭하여 식품 제조 현장 작업자가 경험하는 실제 카카오톡 챗봇 알림 수신 및 발주 프로세스를 시뮬레이션해 보세요.
+                        </p>
+
+                        <div class="space-y-3">
+                            <button onclick="runScenario('safety')" class="w-full text-left p-3.5 rounded-xl bg-slate-900 hover:bg-slate-700 border border-slate-700 hover:border-yellow-400/50 transition flex items-start gap-3 group">
+                                <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg group-hover:bg-yellow-400 group-hover:text-slate-900 transition">
+                                    <i class="fa-solid fa-triangle-exclamation text-base"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-200 group-hover:text-yellow-300">시나리오 A: 검사 부적합/소진 알림</div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">식품검사기관 부적합 감지 ➔ 검증된 대체재 1초 발주 제안</p>
+                                </div>
+                            </button>
+
+                            <button onclick="runScenario('hotdeal')" class="w-full text-left p-3.5 rounded-xl bg-slate-900 hover:bg-slate-700 border border-slate-700 hover:border-yellow-400/50 transition flex items-start gap-3 group">
+                                <div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg group-hover:bg-yellow-400 group-hover:text-slate-900 transition">
+                                    <i class="fa-solid fa-fire text-base"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-200 group-hover:text-yellow-300">시나리오 B: B2B 공동구매 핫딜</div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">순창 태양초 고추장 20kg 32% 할인 핫딜 카카오톡 알림</p>
+                                </div>
+                            </button>
+
+                            <button onclick="runScenario('stock')" class="w-full text-left p-3.5 rounded-xl bg-slate-900 hover:bg-slate-700 border border-slate-700 hover:border-yellow-400/50 transition flex items-start gap-3 group">
+                                <div class="p-2 bg-blue-500/20 text-blue-400 rounded-lg group-hover:bg-yellow-400 group-hover:text-slate-900 transition">
+                                    <i class="fa-solid fa-cubes text-base"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-200 group-hover:text-yellow-300">시나리오 C: 재고 조회 및 대화형 발주</div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">스마트 HACCP 연동 안전재고 잔량 확인 및 정기 수급 주문</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Key Interface Features Card -->
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-xs space-y-2">
+                        <div class="font-semibold text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-info text-blue-400"></i> 현장 맞춤형 'Zero-Hurdle' 특장점
+                        </div>
+                        <ul class="list-disc list-inside text-slate-400 space-y-1">
+                            <li>별도 앱 다운로드 및 ID/PW 가입 절차 없음 (카카오 사업자 인증)</li>
+                            <li>60대 이상 현장 작업자도 즉시 사용할 수 있는 대화형 버튼 클릭 방식</li>
+                            <li>발주 내역은 공장 담당자와 관리자 웹 대시보드에 자동 정산 반영</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Right Phone Mockup Display -->
+                <div class="lg:col-span-7 flex justify-center">
+                    <!-- Mobile Device Shell -->
+                    <div class="w-full max-w-sm bg-slate-950 rounded-[40px] p-3 border-4 border-slate-700 shadow-2xl relative">
+                        <!-- Camera Notch -->
+                        <div class="w-32 h-5 bg-slate-800 rounded-b-xl mx-auto mb-2 flex items-center justify-center">
+                            <div class="w-3 h-3 rounded-full bg-slate-900 mr-2"></div>
+                            <div class="w-2 h-2 rounded-full bg-slate-900"></div>
+                        </div>
+
+                        <!-- Chat Header -->
+                        <div class="bg-[#A0B1C6] text-slate-900 p-3 rounded-t-2xl flex items-center justify-between border-b border-slate-300">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center font-bold text-slate-900 text-sm border border-slate-800">
+                                    KISA
+                                </div>
+                                <div>
+                                    <div class="font-bold text-xs">Safe-Supply KISA 식자재 알림</div>
+                                    <div class="text-[10px] text-slate-600">카카오톡 비즈니스 알림톡</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-bars text-slate-700 text-sm"></i>
+                        </div>
+
+                        <!-- Chat Body Screen -->
+                        <div id="chat-body" class="bg-[#BACEE0] h-[480px] p-3 overflow-y-auto space-y-3 text-slate-900 text-xs">
+                            
+                            <!-- Date divider -->
+                            <div class="text-center">
+                                <span class="bg-black/10 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full">2026년 4월 21일 화요일</span>
+                            </div>
+
+                            <!-- Initial Welcome Message -->
+                            <div class="flex items-start gap-2">
+                                <div class="w-7 h-7 rounded-full bg-yellow-400 flex-shrink-0 flex items-center justify-center font-bold text-[10px]">KISA</div>
+                                <div class="max-w-[85%] relative">
+                                    <div class="text-[10px] text-slate-600 mb-0.5">Safe-Supply KISA</div>
+                                    <div class="bg-white p-3 rounded-xl rounded-tl-none shadow-sm space-y-2 border border-slate-200">
+                                        <p class="font-bold text-slate-900">[KISA 식자재 수급 플랫폼 안내]</p>
+                                        <p class="text-slate-700 text-[11px] leading-relaxed">
+                                            안녕하세요, <strong>(주)경북푸드 제조공장</strong>님.<br>
+                                            식품검사 데이터 및 스마트 HACCP 연동 카카오톡 발주 서비스에 오신 것을 환영합니다!
+                                        </p>
+                                        <div class="bg-slate-50 p-2 rounded border border-slate-200 text-[10px] text-slate-600">
+                                            · 연동 HACCP: 스마티브 솔루션<br>
+                                            · 지정 검사기관: (주)한국표준분석연구원
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Bottom Chat Input Bar -->
+                        <div class="bg-white p-2 rounded-b-2xl border-t border-slate-200 flex items-center gap-2 mt-1">
+                            <i class="fa-solid fa-plus text-slate-400 text-sm px-1"></i>
+                            <div class="flex-grow bg-slate-100 rounded-full py-1.5 px-3 text-[11px] text-slate-400">
+                                하단 버튼을 클릭하여 발주를 진행하세요
+                            </div>
+                            <i class="fa-solid fa-paper-plane text-yellow-500 text-sm px-1"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: SAFETY INSPECTION & SMART HACCP ENGINE -->
+        <section id="view-safety" class="tab-content hidden space-y-6">
+            
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-microscope text-emerald-400"></i> 식품검사 DB & 스마트 HACCP 연동 미들웨어 Engine
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1">
+                            한국표준분석연구원의 국가공인 성분 분석 DB와 제휴 HACCP 솔루션 API를 통해 위험 감지 시 자동 대체재를 추천합니다.
+                        </p>
+                    </div>
+                    <button onclick="triggerHaccpSimulation()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-600/30">
+                        <i class="fa-solid fa-bolt"></i> 미들웨어 실시간 데이터 테스트 수신
+                    </button>
+                </div>
+
+                <!-- 2 Column Engine Detail -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Left: Raw Inspection & CCP Anomaly Input Log -->
+                    <div class="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+                            <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-database text-blue-400"></i> 검사기관 / HACCP 실시간 수신 데이터 (Inbound API)
+                            </span>
+                            <span class="text-[10px] text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded border border-emerald-400/20">LIVE API STREAM</span>
+                        </div>
+
+                        <div id="haccp-log-container" class="space-y-2 font-mono text-[11px] h-64 overflow-y-auto pr-1">
+                            <div class="p-2.5 bg-slate-950 rounded border border-slate-800 text-slate-300">
+                                <span class="text-slate-500">[09:12:04]</span> <span class="text-blue-400">POST /api/v1/haccp/ccp-log</span> - Factory #1024 (대구식품)
+                                <div class="text-slate-400 pl-4 mt-0.5">· 품목: 고추장양념소스 / CCP-1B 가열공정 정상 기록 수신</div>
+                            </div>
+                            <div class="p-2.5 bg-slate-950 rounded border border-slate-800 text-slate-300">
+                                <span class="text-slate-500">[09:25:40]</span> <span class="text-purple-400">POST /api/v1/kisa/inspection-result</span> - Batch #KISA-2604-098
+                                <div class="text-slate-400 pl-4 mt-0.5">· 자가품질검사 적합 통보 완료 (대장균군 음성 / 타르색소 미검출)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Safety-Lead Recommendation Logic Matrix -->
+                    <div class="bg-slate-900 rounded-xl p-4 border border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+                                <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-brain text-emerald-400"></i> 세이프티 리드 대체재 매칭 알고리즘
+                                </span>
+                                <span class="text-[10px] text-slate-400">매칭 정확도: 99.4%</span>
+                            </div>
+
+                            <div class="space-y-3 text-xs">
+                                <div class="p-3 bg-slate-950 rounded-lg border border-emerald-500/30">
+                                    <div class="font-bold text-emerald-400 mb-1 flex items-center justify-between">
+                                        <span>Step 1. 부적합 / 리스크 스크리닝</span>
+                                        <i class="fa-solid fa-filter"></i>
+                                    </div>
+                                    <p class="text-slate-400 text-[11px]">검사 파라미터(보존료, 산도, 세균수 등) 유효범위 초과 시 '대체재 교체 상태'로 변경</p>
+                                </div>
+
+                                <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                                    <div class="font-bold text-sky-400 mb-1 flex items-center justify-between">
+                                        <span>Step 2. 동질성 성분 및 스펙 자동 필터링</span>
+                                        <i class="fa-solid fa-code-compare"></i>
+                                    </div>
+                                    <p class="text-slate-400 text-[11px]">기존 사용 원부자재와 점도, 염도, 당도 스펙이 동일한 검증된 대체 SKU 자동 검색</p>
+                                </div>
+
+                                <div class="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                                    <div class="font-bold text-yellow-400 mb-1 flex items-center justify-between">
+                                        <span>Step 3. 카카오톡 알림 및 즉시 배송 지시</span>
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                    </div>
+                                    <p class="text-slate-400 text-[11px]">대구 저온 물류센터의 안전재고 보유분으로 24시간 내 직배송 수급 확정</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 text-right">
+                            Engine Architecture: Node.js / Python Fast-API Rule Engine
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Partner Plug-in Integration Flow -->
+            <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700">
+                <h3 class="text-sm font-bold text-white mb-3">스마트 HACCP / 식품검사기관 표준 API 플러그인 규격</h3>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+<pre class="text-emerald-400">// POST https://api.kisa-scm.co.kr/v1/partner/webhook
+{
+  <span class="text-sky-300">"partner_id"</span>: <span class="text-yellow-300">"SMARTIVE_HACCP_01"</span>,
+  <span class="text-sky-300">"factory_code"</span>: <span class="text-yellow-300">"FACT_DG_502"</span>,
+  <span class="text-sky-300">"event_type"</span>: <span class="text-yellow-300">"MATERIAL_DEPLETION_WARNING"</span>,
+  <span class="text-sky-300">"payload"</span>: {
+    <span class="text-sky-300">"raw_material_code"</span>: <span class="text-yellow-300">"MAT_GOCHU_20KG"</span>,
+    <span class="text-sky-300">"current_stock_kg"</span>: 40.0,
+    <span class="text-sky-300">"estimated_depletion_hours"</span>: 18,
+    <span class="text-sky-300">"recommended_reorder_qty"</span>: 10
+  }
+}</pre>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- TAB 4: B2B GROUP BUYING HOT DEAL ENGINE -->
+        <section id="view-group" class="tab-content hidden space-y-6">
+            
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-packing text-amber-400"></i> B2B 공동구매 핫딜 & 바잉파워(Buying Power) 수급 엔진
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">
+                        영세 식품 제조 공장이 개별 구매할 때 발생하는 높은 원가 부담을 대량 매입 및 카카오톡 공동구매로 획기적 절감합니다.
+                    </p>
+                </div>
+
+                <!-- Interactive Buying Calculator -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Calculator Inputs -->
+                    <div class="bg-slate-900 p-5 rounded-xl border border-slate-700 space-y-4">
+                        <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">핫딜 시뮬레이터 옵션 설정</h3>
+                        
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-semibold">공동구매 품목 선택</label>
+                            <select id="calc-item" onchange="updateGroupCalc()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                                <option value="gochu">태양초 고추장 20kg (제조업 전용)</option>
+                                <option value="soy">진간장 18L (소스 제조용)</option>
+                                <option value="garlic">다진 마늘 10kg (국산 100%)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1 font-semibold">참여 공장 수 (수요 집계)</label>
+                            <input id="calc-factories" type="range" min="10" max="200" value="85" oninput="updateGroupCalc()" class="w-full accent-amber-400">
+                            <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                                <span>10개 공장</span>
+                                <span id="calc-factories-val" class="text-amber-400 font-bold">85개 공장 참여 중</span>
+                                <span>200개 공장</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs space-y-1 text-slate-400">
+                            <div class="flex justify-between">
+                                <span>시중 개별 도매가:</span>
+                                <span id="calc-orig-price" class="text-slate-200">75,000원 / 통</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>대량 직매입 계약가:</span>
+                                <span id="calc-bulk-price" class="text-emerald-400 font-bold">49,000원 / 통</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculator Results Display -->
+                    <div class="lg:col-span-2 bg-slate-900 p-5 rounded-xl border border-amber-500/30 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-full border border-amber-400/20">공동구매 바잉 파워 성과</span>
+                                <span class="text-xs text-slate-400">대구 저온물류 거점 통합 배송</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                                    <div class="text-[11px] text-slate-400">총 집계 수량</div>
+                                    <div id="calc-total-qty" class="text-lg font-bold text-white mt-1">1,700 통</div>
+                                    <div class="text-[10px] text-slate-500 mt-0.5">34,000 kg 원자재</div>
+                                </div>
+
+                                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                                    <div class="text-[11px] text-slate-400">공장당 평균 원가 절감률</div>
+                                    <div id="calc-discount-rate" class="text-lg font-bold text-amber-400 mt-1">34.6%</div>
+                                    <div class="text-[10px] text-emerald-400 mt-0.5">개별 구매 대비 압도적 할인</div>
+                                </div>
+
+                                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                                    <div class="text-[11px] text-slate-400">참여 제조사 총 절감액</div>
+                                    <div id="calc-total-savings" class="text-lg font-bold text-emerald-400 mt-1">44,200,000원</div>
+                                    <div class="text-[10px] text-slate-500 mt-0.5">이번 핫딜 차수 기준</div>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1.5 font-semibold">
+                                    <span>핫딜 최소 달성 목표 (500통)</span>
+                                    <span class="text-amber-400 font-bold">340% 달성 완료 (발주 확정)</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                                    <div id="calc-progress-bar" class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full transition-all duration-500" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-400">카카오톡 푸시 발송 완료 ➔ 자동 배송지시서 발행</span>
+                            <span class="text-emerald-400 font-bold"><i class="fa-solid fa-truck-fast"></i> 24시간 내 배송 시작</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Revenue Sharing & Platform Monetization Model -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-coins text-yellow-400"></i> 1. 유통 마진 & 물류 수수료
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        대량 선매입을 통한 원재료 시세 차익 마진과 자체 저온 물류 거점 통합 배송/풀필먼트 수수료
+                    </p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-handshake-angle text-emerald-400"></i> 2. 파트너 상생 정산 수수료
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        스마트 HACCP/검사기관 유입 발주 건에 대해 중개 거래 수수료를 시스템 파트너사와 자동으로 공유
+                    </p>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-purple-400"></i> 3. SaaS & 데이터 리포트
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        제조사별 식자재 소비 패턴 분석 및 컴플라이언스 이력 관리 고도화 프리미엄 월 구독 수익
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- TAB 5: INTEGRATED ADMIN DASHBOARD & LOGISTICS FULFILLMENT -->
+        <section id="view-admin" class="tab-content hidden space-y-6">
+            
+            <!-- Real-time Metrics Banner -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400 mb-1">연동 거래처 공장 수</div>
+                    <div class="text-xl font-bold text-white flex items-baseline gap-2">
+                        <span>512 개사</span>
+                        <span class="text-xs text-emerald-400 font-normal"><i class="fa-solid fa-arrow-up"></i> +12%</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">대구·경북 핵심 네트워크 기반</div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400 mb-1">금일 카카오 챗봇 발주건</div>
+                    <div class="text-xl font-bold text-yellow-400 flex items-baseline gap-2">
+                        <span>148 건</span>
+                        <span class="text-xs text-yellow-300 font-normal">8,920만원</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">평균 처리 시간: 1.2초</div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400 mb-1">세이프티 리드 감지 건수</div>
+                    <div class="text-xl font-bold text-emerald-400 flex items-baseline gap-2">
+                        <span>24 건</span>
+                        <span class="text-xs text-slate-400 font-normal">100% 대체완료</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">부적합 미연 방지</div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400 mb-1">저온 물류 24h 당일 출고율</div>
+                    <div class="text-xl font-bold text-purple-400 flex items-baseline gap-2">
+                        <span>99.2 %</span>
+                        <span class="text-xs text-purple-300 font-normal">정상 가동</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">대구 콜드체인 거점</div>
+                </div>
+            </div>
+
+            <!-- Admin Live Dispatch & Partner Settlement Table -->
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="p-5 border-b border-slate-700 flex flex-col md:flex-row justify-between md:items-center gap-3">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-purple-400"></i> Safe-Supply 통합 관리자 주문 & 물류 배송 현황
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">카카오톡 수신 발주 ➔ 저온 창고 WMS 출고 지시 ➔ 파트너사 수수료 자동 정산 상태</p>
+                    </div>
+                    <span class="text-xs px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full border border-purple-500/30">
+                        자동 정산 파이프라인 가동 중
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900/80 text-slate-400 font-semibold uppercase text-[10px] border-b border-slate-700">
+                            <tr>
+                                <th class="p-3.5">주문 번호 / 시각</th>
+                                <th class="p-3.5">고객 공장명</th>
+                                <th class="p-3.5">유입 경로</th>
+                                <th class="p-3.5">주문 품목 및 수량</th>
+                                <th class="p-3.5">결제 금액</th>
+                                <th class="p-3.5">물류 배송 상태</th>
+                                <th class="p-3.5">파트너 수수료</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/60">
+                            <tr class="hover:bg-slate-700/30 transition">
+                                <td class="p-3.5 font-mono text-slate-400">
+                                    #ORD-20260421-089
+                                    <div class="text-[10px] text-slate-500">10:14:22</div>
+                                </td>
+                                <td class="p-3.5 font-semibold text-white">(주)대구성서식품</td>
+                                <td class="p-3.5">
+                                    <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px]">
+                                        자가품질검사 연동
+                                    </span>
+                                </td>
+                                <td class="p-3.5">대체재 진간장 18L x 10통</td>
+                                <td class="p-3.5 font-bold text-white">380,000원</td>
+                                <td class="p-3.5">
+                                    <span class="px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[10px] flex items-center gap-1 w-fit">
+                                        <i class="fa-solid fa-truck-arrow-right"></i> 출고 완료 (배송중)
+                                    </span>
+                                </td>
+                                <td class="p-3.5 text-emerald-400 font-semibold">+11,400원 (KISA 연동)</td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-700/30 transition">
+                                <td class="p-3.5 font-mono text-slate-400">
+                                    #ORD-20260421-088
+                                    <div class="text-[10px] text-slate-500">09:50:11</div>
+                                </td>
+                                <td class="p-3.5 font-semibold text-white">영남소물가공공장</td>
+                                <td class="p-3.5">
+                                    <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px]">
+                                        공동구매 핫딜
+                                    </span>
+                                </td>
+                                <td class="p-3.5">태양초 고추장 20kg x 15통</td>
+                                <td class="p-3.5 font-bold text-white">735,000원</td>
+                                <td class="p-3.5">
+                                    <span class="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] flex items-center gap-1 w-fit">
+                                        <i class="fa-solid fa-box font-bold"></i> 상차 피킹 진행
+                                    </span>
+                                </td>
+                                <td class="p-3.5 text-slate-400 font-semibold">플랫폼 직접 마진</td>
+                            </tr>
+
+                            <tr class="hover:bg-slate-700/30 transition">
+                                <td class="p-3.5 font-mono text-slate-400">
+                                    #ORD-20260421-087
+                                    <div class="text-[10px] text-slate-500">09:12:05</div>
+                                </td>
+                                <td class="p-3.5 font-semibold text-white">경북스마트밀키트</td>
+                                <td class="p-3.5">
+                                    <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 text-[10px]">
+                                        스마트 HACCP API
+                                    </span>
+                                </td>
+                                <td class="p-3.5">국산 다진마늘 10kg x 8통</td>
+                                <td class="p-3.5 font-bold text-white">416,000원</td>
+                                <td class="p-3.5">
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] flex items-center gap-1 w-fit">
+                                        <i class="fa-solid fa-circle-check"></i> 배송완료 (인수증 수령)
+                                    </span>
+                                </td>
+                                <td class="p-3.5 text-sky-400 font-semibold">+12,480원 (스마티브 공유)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        // Tab switching controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-blue-500', 'text-blue-400', 'bg-slate-800');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+
+            document.getElementById('view-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.add('border-blue-500', 'text-blue-400', 'bg-slate-800');
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+        }
+
+        // KakaoTalk Simulator Script logic
+        function runScenario(type) {
+            const chatBody = document.getElementById('chat-body');
+            const timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            if (type === 'safety') {
+                chatBody.innerHTML += `
+                    <div class="flex items-start gap-2 animate-fade-in">
+                        <div class="w-7 h-7 rounded-full bg-yellow-400 flex-shrink-0 flex items-center justify-center font-bold text-[10px]">KISA</div>
+                        <div class="max-w-[85%]">
+                            <div class="text-[10px] text-slate-600 mb-0.5">Safe-Supply KISA</div>
+                            <div class="bg-white p-3 rounded-xl rounded-tl-none shadow-sm space-y-2 border border-slate-200">
+                                <div class="flex items-center gap-1.5 text-red-600 font-bold">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> [긴급 안전 알림 및 대체재 추천]
+                                </div>
+                                <p class="text-slate-700 text-[11px]">
+                                    (주)한국표준분석연구원 자가품질검사 결과,<br>
+                                    현재 사용 중인 <strong>[원료 Batch #2049]</strong>의 보존료 기준치 근접이 감지되었습니다.
+                                </p>
+                                <div class="bg-emerald-50 p-2 rounded border border-emerald-200 text-[11px] text-emerald-800">
+                                    <strong>[검증된 Safe-Lead 대체재]</strong><br>
+                                    · 추천 품목: 순창 성분인증 진간장 18L<br>
+                                    · 단가: 38,000원 (KISA 검사 적합 완료)<br>
+                                    · 배송: 대구 물류센터 당일 24h 직배송
+                                </div>
+                                <button onclick="orderConfirm('순창 성분인증 진간장 18L x 5통', '190,000원')" class="w-full py-2 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold rounded-lg text-center transition shadow-sm">
+                                    <i class="fa-solid fa-cart-shopping"></i> 1초 즉시 발주 승인
+                                </button>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">${timeStr}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'hotdeal') {
+                chatBody.innerHTML += `
+                    <div class="flex items-start gap-2 animate-fade-in">
+                        <div class="w-7 h-7 rounded-full bg-yellow-400 flex-shrink-0 flex items-center justify-center font-bold text-[10px]">KISA</div>
+                        <div class="max-w-[85%]">
+                            <div class="text-[10px] text-slate-600 mb-0.5">Safe-Supply KISA</div>
+                            <div class="bg-white p-3 rounded-xl rounded-tl-none shadow-sm space-y-2 border border-slate-200">
+                                <div class="flex items-center gap-1.5 text-amber-600 font-bold">
+                                    <i class="fa-solid fa-fire text-amber-500"></i> [B2B 공동구매 핫딜 알림]
+                                </div>
+                                <p class="text-slate-700 text-[11px]">
+                                    영남권 85개 식품 제조 공장 공동 발주 집계 완료!
+                                </p>
+                                <div class="bg-amber-50 p-2 rounded border border-amber-200 text-[11px] text-amber-900">
+                                    <strong>[태양초 고추장 20kg 제조업 특가]</strong><br>
+                                    · 시중 도매가: <del class="text-slate-400">75,000원</del><br>
+                                    · 핫딜 할인가: <strong>49,000원 (-34.6%)</strong><br>
+                                    · 잔여 수량: 150통 한정
+                                </div>
+                                <button onclick="orderConfirm('태양초 고추장 20kg 핫딜 x 10통', '490,000원')" class="w-full py-2 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-lg text-center transition shadow-sm">
+                                    <i class="fa-solid fa-bolt"></i> 핫딜 수량 참여 발주
+                                </button>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">${timeStr}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'stock') {
+                chatBody.innerHTML += `
+                    <div class="flex items-start gap-2 animate-fade-in">
+                        <div class="w-7 h-7 rounded-full bg-yellow-400 flex-shrink-0 flex items-center justify-center font-bold text-[10px]">KISA</div>
+                        <div class="max-w-[85%]">
+                            <div class="text-[10px] text-slate-600 mb-0.5">Safe-Supply KISA</div>
+                            <div class="bg-white p-3 rounded-xl rounded-tl-none shadow-sm space-y-2 border border-slate-200">
+                                <div class="font-bold text-slate-900">[스마트 HACCP 안전재고 현황]</div>
+                                <p class="text-slate-700 text-[11px]">
+                                    경북푸드 공장의 주요 원자재 예상 소진 리드타임:
+                                </p>
+                                <div class="bg-slate-50 p-2 rounded border border-slate-200 text-[11px] space-y-1 text-slate-700">
+                                    <div class="flex justify-between">
+                                        <span>· 국산 다진마늘 10kg:</span>
+                                        <span class="text-red-600 font-bold">12시간 후 소진</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>· 양조간장 18L:</span>
+                                        <span class="text-emerald-600">3일 잔여 (양호)</span>
+                                    </div>
+                                </div>
+                                <button onclick="orderConfirm('국산 다진마늘 10kg x 4통', '208,000원')" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-yellow-400 font-bold rounded-lg text-center transition shadow-sm">
+                                    <i class="fa-solid fa-rotate"></i> 소진 예정 품목 자동 발주
+                                </button>
+                            </div>
+                            <div class="text-[9px] text-slate-500 mt-1">${timeStr}</div>
+                        </div>
+                    </div>
+                `;
+            }
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function orderConfirm(item, price) {
+            const chatBody = document.getElementById('chat-body');
+            const timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
+            chatBody.innerHTML += `
+                <!-- User Response -->
+                <div class="flex items-start justify-end gap-2 animate-fade-in">
+                    <div class="max-w-[80%] text-right">
+                        <div class="bg-[#FEE500] p-2.5 rounded-xl rounded-tr-none text-slate-900 font-semibold shadow-sm text-[11px]">
+                            [발주 승인] ${item} 결제 진행해 주세요.
+                        </div>
+                        <div class="text-[9px] text-slate-500 mt-1">${timeStr}</div>
+                    </div>
+                </div>
+
+                <!-- Bot Confirmation Message -->
+                <div class="flex items-start gap-2 animate-fade-in">
+                    <div class="w-7 h-7 rounded-full bg-yellow-400 flex-shrink-0 flex items-center justify-center font-bold text-[10px]">KISA</div>
+                    <div class="max-w-[85%]">
+                        <div class="text-[10px] text-slate-600 mb-0.5">Safe-Supply KISA</div>
+                        <div class="bg-white p-3 rounded-xl rounded-tl-none shadow-sm space-y-1.5 border border-slate-200">
+                            <div class="text-emerald-600 font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check"></i> 발주 및 24h 배송 접수 완료
+                            </div>
+                            <div class="text-[11px] text-slate-700">
+                                · 주문 품목: ${item}<br>
+                                · 결제 금액: <strong>${price}</strong> (사업자 후불 정산)<br>
+                                · 배송 거점: 대구 콜드체인 물류 센터<br>
+                                · 도착 예정: 내일 오전 08:00 전 직배송
+                            </div>
+                        </div>
+                        <div class="text-[9px] text-slate-500 mt-1">${timeStr}</div>
+                    </div>
+                </div>
+            `;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Group Buying Calculator logic
+        function updateGroupCalc() {
+            const item = document.getElementById('calc-item').value;
+            const factories = parseInt(document.getElementById('calc-factories').value);
+            
+            document.getElementById('calc-factories-val').innerText = factories + '개 공장 참여 중';
+
+            let basePrice = 75000;
+            let bulkPrice = 49000;
+            let unitName = "통";
+            let unitKg = 20;
+
+            if (item === 'soy') {
+                basePrice = 48000;
+                bulkPrice = 32000;
+                unitKg = 18;
+            } else if (item === 'garlic') {
+                basePrice = 72000;
+                bulkPrice = 52000;
+                unitKg = 10;
+            }
+
+            const totalQty = factories * 20; // Avg 20 units per factory
+            const totalOrigCost = totalQty * basePrice;
+            const totalBulkCost = totalQty * bulkPrice;
+            const savings = totalOrigCost - totalBulkCost;
+            const discountRate = (((basePrice - bulkPrice) / basePrice) * 100).toFixed(1);
+
+            document.getElementById('calc-orig-price').innerText = basePrice.toLocaleString() + '원 / ' + unitName;
+            document.getElementById('calc-bulk-price').innerText = bulkPrice.toLocaleString() + '원 / ' + unitName;
+            document.getElementById('calc-total-qty').innerText = totalQty.toLocaleString() + ' ' + unitName;
+            document.getElementById('calc-discount-rate').innerText = discountRate + '%';
+            document.getElementById('calc-total-savings').innerText = savings.toLocaleString() + '원';
+
+            const progressPct = Math.min(100, Math.round((factories / 100) * 100));
+            document.getElementById('calc-progress-bar').style.width = progressPct + '%';
+        }
+
+        // Live HACCP Simulation Log Trigger
+        function triggerHaccpSimulation() {
+            const logContainer = document.getElementById('haccp-log-container');
+            const nowStr = new Date().toLocaleTimeString('en-US', { hour12: false });
+            
+            const randomLog = `
+                <div class="p-2.5 bg-slate-950 rounded border border-emerald-500/40 text-slate-300 animate-pulse">
+                    <span class="text-slate-500">[${nowStr}]</span> <span class="text-emerald-400">EVENT TRIGGER / SCM-SAFETY</span>
+                    <div class="text-emerald-300 font-bold pl-4 mt-0.5">· [경북푸드] 자가품질검사 안전 검증 완료 ➔ 카카오톡 대체재 발주 푸시 자동 발송됨</div>
+                </div>
+            `;
+            logContainer.innerHTML = randomLog + logContainer.innerHTML;
+        }
+
+        // Initializer
+        window.onload = function() {
+            updateGroupCalc();
+        };
+    </script>
+</body>
+</html>
