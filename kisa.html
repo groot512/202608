@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(주)한국표준분석연구원 - SCM 플랫폼 브리핑</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 700; }
+        .step-active { background-color: #2563eb; color: white; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .kakao-yellow { background-color: #FEE500; }
+    </style>
+</head>
+<body class="text-slate-800">
+
+<!-- Chosen Palette: Modern Trust Blue & Safety Emerald 
+     - Primary: #2563eb (Trust, Tech)
+     - Secondary: #059669 (Safety, Food)
+     - Accent: #FEE500 (Kakao Integration)
+     - Neutral: #f8fafc, #ffffff
+-->
+
+<!-- Application Structure Plan: 
+     본 애플리케이션은 단순한 문서 요약을 넘어, '문제 인식 -> 기술적 해결 -> 시장 확장 -> 실행 역량'의 논리적 흐름을 대시보드 형태로 설계했습니다.
+     1. 메인 대시보드: 사업 개요 및 핵심 정체성 (Summary)
+     2. 실패와 극복: 과거 폐업 이력 분석 및 재도전 전략 (Story/Strategy)
+     3. 시스템 아키텍처: 데이터-플랫폼-물류의 수직 계열화 시각화 (Interactive Flow)
+     4. 비즈니스 대시보드: 수익 모델 및 자금 운용 시각화 (Financials)
+     5. 로드맵: 단계별 성장 전략 및 실증 계획 (Timeline)
+     사용자는 상단 탭을 통해 비선형적으로 정보를 탐색하며, 특히 인터랙티브 시뮬레이션을 통해 카카오톡 기반 UI의 강점을 이해하게 됩니다.
+-->
+
+<!-- Visualization & Content Choices: 
+     - 과제 개요: 핵심 아이콘과 카드 레이아웃으로 요약 정보 가독성 증대.
+     - 폐업 원인 vs 개선 전략: 사이드 바이 사이드 비교 테이블을 통한 개선 의지 강조.
+     - 사업비 구성: Chart.js 도넛 차트로 정부 지원금 및 자급 비중 시각화.
+     - 수익 모델: 상호 연결된 네트워크 아이콘으로 다각화된 모델 설명.
+     - SCM 로드맵: HTML/CSS 기반 인터랙티브 타임라인으로 단계별 목표 명시.
+     - CONFIRMATION: 모든 차트는 Canvas 기반 Chart.js를 사용하며 SVG/Mermaid JS를 배제함.
+-->
+
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold">K</div>
+                <h1 class="text-lg font-bold tracking-tight text-slate-900">(주)한국표준분석연구원</h1>
+            </div>
+            <div class="text-xs font-semibold px-3 py-1 bg-blue-100 text-blue-700 rounded-full">
+                2026 재도전성공패키지
+            </div>
+        </div>
+        <!-- Navigation -->
+        <nav class="bg-white border-b border-slate-200">
+            <div class="max-w-6xl mx-auto px-4 flex gap-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                <button onclick="showSection('home')" id="tab-home" class="tab-btn py-3 text-sm transition-all tab-active">사업 개요</button>
+                <button onclick="showSection('strategy')" id="tab-strategy" class="tab-btn py-3 text-sm transition-all text-slate-500">재도전 전략</button>
+                <button onclick="showSection('tech')" id="tab-tech" class="tab-btn py-3 text-sm transition-all text-slate-500">핵심 솔루션</button>
+                <button onclick="showSection('business')" id="tab-business" class="tab-btn py-3 text-sm transition-all text-slate-500">수익 모델 & 자금</button>
+                <button onclick="showSection('roadmap')" id="tab-roadmap" class="tab-btn py-3 text-sm transition-all text-slate-500">성장 로드맵</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-6xl mx-auto w-full p-4 md:p-6">
+
+        <!-- SECTION 1: HOME (OVERVIEW) -->
+        <section id="sec-home" class="content-sec space-y-6">
+            <div class="bg-gradient-to-br from-blue-700 to-indigo-800 rounded-2xl p-6 md:p-8 text-white shadow-xl">
+                <div class="max-w-2xl">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4">식품 안전 데이터 기반<br>B2B 식자재 수급 최적화 플랫폼</h2>
+                    <p class="text-blue-100 mb-6 leading-relaxed">카카오톡 챗봇과 스마트 HACCP 데이터를 연동하여 부적합 우려 원료의 자동 대체와 공동구매 핫딜을 제공하는 차세대 SCM을 구축합니다.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg border border-white/20">
+                            <i class="fa-solid fa-shield-halved text-emerald-300"></i>
+                            <span class="text-sm font-medium">안전 데이터 연동</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg border border-white/20">
+                            <i class="fa-brands fa-comment text-yellow-300"></i>
+                            <span class="text-sm font-medium">카카오톡 인터페이스</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg border border-white/20">
+                            <i class="fa-solid fa-truck-fast text-sky-300"></i>
+                            <span class="text-sm font-medium">수직계열화 SCM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-card p-5 rounded-xl border border-slate-200">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-4">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-1">협약 기간</h3>
+                    <p class="text-sm text-slate-600">2026.04.01 ~ 2026.10.31</p>
+                    <p class="text-xs text-blue-600 font-semibold mt-1">총 7개월 집중 개발 및 실증</p>
+                </div>
+                <div class="glass-card p-5 rounded-xl border border-slate-200">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600 mb-4">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-1">주관/거점</h3>
+                    <p class="text-sm text-slate-600">경북대학교 / 대구·경북 지역</p>
+                    <p class="text-xs text-emerald-600 font-semibold mt-1">500여 개 B2B 거래처 확보</p>
+                </div>
+                <div class="glass-card p-5 rounded-xl border border-slate-200">
+                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-600 mb-4">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 mb-1">대표자 역량</h3>
+                    <p class="text-sm text-slate-600">식자재 유통 13년 노하우</p>
+                    <p class="text-xs text-yellow-700 font-semibold mt-1">도메인 지식 기반 핵심 로직 설계</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200">
+                <h3 class="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                    <span class="w-1 h-6 bg-blue-600 rounded-full"></span> 핵심 비즈니스 아키텍처
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center font-bold text-slate-600">1</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">데이터 수집 및 감지</h4>
+                                <p class="text-sm text-slate-500">식품검증기관 및 스마트 HACCP 데이터 실시간 분석</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center font-bold text-slate-600">2</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">카카오톡 알림 및 추천</h4>
+                                <p class="text-sm text-slate-500">부적합 감지 시 즉시 대체재 추천 및 핫딜 알림톡 발송</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center font-bold text-slate-600">3</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">원클릭 발주 및 배송</h4>
+                                <p class="text-sm text-slate-500">별도 앱 없이 채팅방 내 결제 및 24시간 내 물류 완료</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center">
+                        <p class="text-xs text-slate-400 uppercase tracking-widest mb-4">Platform Interface</p>
+                        <div class="relative inline-block mx-auto">
+                            <div class="w-48 h-80 bg-slate-900 rounded-[2rem] border-4 border-slate-300 relative p-3 shadow-2xl">
+                                <div class="w-12 h-1 bg-slate-300 mx-auto rounded-full mb-4 mt-1"></div>
+                                <div class="kakao-yellow h-52 rounded-lg p-2 text-left">
+                                    <div class="w-6 h-6 bg-white rounded-full mb-2"></div>
+                                    <div class="bg-white rounded p-1 mb-1 shadow-sm">
+                                        <div class="w-full h-1 bg-slate-100 mb-1"></div>
+                                        <div class="w-3/4 h-1 bg-slate-100"></div>
+                                    </div>
+                                    <div class="bg-blue-600 rounded p-2 text-[8px] text-white font-bold text-center">
+                                        부적합 감지! 대체재 확인
+                                    </div>
+                                    <div class="bg-white rounded p-1 mt-2 flex justify-between items-center">
+                                        <span class="text-[6px] font-bold">간장 18L</span>
+                                        <span class="text-[6px] text-red-500">핫딜 특가</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex gap-1 justify-center">
+                                    <div class="w-8 h-8 rounded-full bg-white/20"></div>
+                                    <div class="w-8 h-8 rounded-full bg-white/20"></div>
+                                    <div class="w-8 h-8 rounded-full bg-white/20"></div>
+                                </div>
+                            </div>
+                            <div class="absolute -right-12 top-1/4 bg-white p-3 rounded shadow-lg border border-slate-100 text-[10px] text-left">
+                                <p class="font-bold text-blue-600">디지털 전환 (DX)</p>
+                                <p class="text-slate-500">현장 근로자 사용성 200%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: STRATEGY (FAIL & FIX) -->
+        <section id="sec-strategy" class="content-sec hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200">
+                <h3 class="font-bold text-lg text-slate-900 mb-2">성공을 위한 과거의 교훈</h3>
+                <p class="text-sm text-slate-500 mb-6">3번의 폐업을 통해 얻은 데이터와 실행력을 바탕으로 기술 내재화에 집중했습니다.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Failure Analysis -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-circle-xmark text-red-400"></i> 과거 폐업 원인
+                        </h4>
+                        <div class="p-4 bg-red-50 border border-red-100 rounded-xl space-y-3">
+                            <div class="flex justify-between items-start">
+                                <span class="text-sm font-bold text-red-800">외부 기술 의존</span>
+                                <span class="text-xs bg-red-200 text-red-700 px-2 py-0.5 rounded">Critical</span>
+                            </div>
+                            <p class="text-xs text-red-700 leading-relaxed">IT 역량 부재 상황에서 외부 개발사에 전적으로 의존하여 비즈니스 유연성 상실.</p>
+                            <div class="h-px bg-red-200 my-2"></div>
+                            <span class="text-sm font-bold text-red-800">현장 수용성 무시</span>
+                            <p class="text-xs text-red-700 leading-relaxed">복잡한 ERP/앱 설치 요구로 인한 현장 작업자의 거부감 및 사용률 저조.</p>
+                        </div>
+                    </div>
+
+                    <!-- Improvement Strategy -->
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i> 재도전 개선 전략
+                        </h4>
+                        <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-xl space-y-3">
+                            <div class="flex justify-between items-start">
+                                <span class="text-sm font-bold text-emerald-800">핵심 로직 내재화</span>
+                                <span class="text-xs bg-emerald-200 text-emerald-700 px-2 py-0.5 rounded">Solution</span>
+                            </div>
+                            <p class="text-xs text-emerald-700 leading-relaxed">대표자가 직접 아키텍처를 설계하고 식품 도메인 지식을 알고리즘화하여 통제권 확보.</p>
+                            <div class="h-px bg-emerald-200 my-2"></div>
+                            <span class="text-sm font-bold text-emerald-800">Zero-Hurdle 인터페이스</span>
+                            <p class="text-xs text-emerald-700 leading-relaxed">국민 메신저 카카오톡 활용으로 별도 교육 없이 즉시 도입 가능한 환경 구축.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Improvement Items -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-database text-blue-500 mb-2 text-xl"></i>
+                    <h5 class="text-sm font-bold">DB 확보 전략</h5>
+                    <p class="text-[11px] text-slate-500 mt-1">검사기관 제휴를 통한 고신뢰 데이터 확보</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-code text-blue-500 mb-2 text-xl"></i>
+                    <h5 class="text-sm font-bold">기술 직접 통제</h5>
+                    <p class="text-[11px] text-slate-500 mt-1">외부 개발사 의존 탈피 및 직접 설계</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-handshake text-blue-500 mb-2 text-xl"></i>
+                    <h5 class="text-sm font-bold">네트워크 활용</h5>
+                    <p class="text-[11px] text-slate-500 mt-1">기존 500개 거래처 기반 즉시 실증</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-warehouse text-blue-500 mb-2 text-xl"></i>
+                    <h5 class="text-sm font-bold">물류 인프라</h5>
+                    <p class="text-[11px] text-slate-500 mt-1">자체 저온 물류 거점 및 배송망 연동</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: TECH (CORE SOLUTION) -->
+        <section id="sec-tech" class="content-sec hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-900">핵심 솔루션: Safe-Supply SCM</h3>
+                        <p class="text-sm text-slate-500">데이터 감지에서 물류 실행까지의 수직 계열화 프로세스</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="px-3 py-1 bg-slate-100 rounded text-xs font-bold text-slate-600">Canvas Rendering</span>
+                        <span class="px-3 py-1 bg-blue-600 rounded text-xs font-bold text-white">Live System</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Step 1 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-bl-full"></div>
+                        <span class="text-xs font-bold text-emerald-600 uppercase">Input Data</span>
+                        <h4 class="font-bold text-slate-800 mt-2">식품 안전 데이터 연동</h4>
+                        <ul class="text-xs text-slate-600 mt-4 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 자가품질검사 성분 분석 DB</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 스마트 HACCP 기록 동기화</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500"></i> 원재료 리드타임 감지</li>
+                        </ul>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-bl-full"></div>
+                        <span class="text-xs font-bold text-blue-600 uppercase">Processing</span>
+                        <h4 class="font-bold text-slate-800 mt-2">최적 대체재 매칭 엔진</h4>
+                        <ul class="text-xs text-slate-600 mt-4 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> 부적합 우려 시 자동 트리거</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> 스펙 동일 대체재 필터링</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> 공동구매 수요 집계(Batch)</li>
+                        </ul>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="p-5 bg-slate-50 rounded-xl border border-slate-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-500/10 rounded-bl-full"></div>
+                        <span class="text-xs font-bold text-yellow-600 uppercase">Output/Execution</span>
+                        <h4 class="font-bold text-slate-800 mt-2">카카오 챗봇 & 물류 실행</h4>
+                        <ul class="text-xs text-slate-600 mt-4 space-y-2">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-yellow-500"></i> 카카오톡 비즈니스 알림톡</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-yellow-500"></i> 1초 발주 및 간편 결제</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-yellow-500"></i> 24시간 내 저온 배송 완료</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Diagram-like Container -->
+                <div class="mt-8 p-6 bg-slate-900 rounded-xl text-center">
+                    <p class="text-blue-400 text-xs font-bold mb-6">Vertical SCM Flow Diagram (CSS based)</p>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                        <div class="bg-slate-800 px-4 py-3 rounded border border-slate-700 text-white text-xs">검사기관/HACCP</div>
+                        <i class="fa-solid fa-arrow-right text-slate-600 hidden md:block"></i>
+                        <i class="fa-solid fa-arrow-down text-slate-600 md:hidden"></i>
+                        <div class="bg-blue-600 px-6 py-4 rounded-lg border border-blue-400 text-white font-bold">KISA SCM 플랫폼</div>
+                        <i class="fa-solid fa-arrow-right text-slate-600 hidden md:block"></i>
+                        <i class="fa-solid fa-arrow-down text-slate-600 md:hidden"></i>
+                        <div class="flex flex-col gap-2">
+                            <div class="bg-yellow-400 px-4 py-2 rounded text-slate-900 text-[10px] font-bold">카카오톡 챗봇</div>
+                            <div class="bg-emerald-500 px-4 py-2 rounded text-white text-[10px] font-bold">저온 물류센터</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: BUSINESS (FINANCIALS & MODEL) -->
+        <section id="sec-business" class="content-sec hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Revenue Model -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-lg text-slate-900 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-coins text-yellow-500"></i> 다각화된 수익 모델
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="mt-6 space-y-3">
+                        <div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded transition cursor-help" title="대량 매입을 통한 유통 마진">
+                            <span class="text-xs font-medium text-slate-600"><span class="inline-block w-2 h-2 rounded-full bg-blue-500 mr-2"></span>직접 유통 마진</span>
+                            <span class="text-xs font-bold">65% (핵심)</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded transition cursor-help" title="파트너사 유입 거래 중개 수수료">
+                            <span class="text-xs font-medium text-slate-600"><span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>시스템 파트너십 수수료</span>
+                            <span class="text-xs font-bold">15%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded transition cursor-help" title="데이터 리포트 및 관리 SaaS">
+                            <span class="text-xs font-medium text-slate-600"><span class="inline-block w-2 h-2 rounded-full bg-orange-500 mr-2"></span>SaaS 구독 및 데이터 수익</span>
+                            <span class="text-xs font-bold">10%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 hover:bg-slate-50 rounded transition cursor-help" title="제조사 타겟 광고 및 바우처">
+                            <span class="text-xs font-medium text-slate-600"><span class="inline-block w-2 h-2 rounded-full bg-slate-400 mr-2"></span>B2B 광고 및 기타</span>
+                            <span class="text-xs font-bold">10%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget Allocation -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <h3 class="font-bold text-lg text-slate-900 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-blue-500"></i> 사업비 집계 및 운용
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mb-6">총 사업비 7,340만원 (정부지원 5,500만원 / 74.9%)</p>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                    <div class="mt-6 grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-blue-50 rounded-lg">
+                            <span class="block text-[10px] text-blue-600 font-bold uppercase">인건비</span>
+                            <span class="text-sm font-bold text-slate-800">4,460만원</span>
+                            <p class="text-[9px] text-slate-500 mt-1">대표자 포함 6명 팀 구성</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <span class="block text-[10px] text-slate-600 font-bold uppercase">외주 용역비</span>
+                            <span class="text-sm font-bold text-slate-800">1,380만원</span>
+                            <p class="text-[9px] text-slate-500 mt-1">챗봇 API 및 미들웨어 개발</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: ROADMAP -->
+        <section id="sec-roadmap" class="content-sec hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200">
+                <h3 class="font-bold text-lg text-slate-900 mb-8 text-center">시장 확장 및 고도화 로드맵</h3>
+                
+                <div class="relative">
+                    <!-- Vertical Line -->
+                    <div class="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-slate-100"></div>
+                    
+                    <!-- Roadmap Item 1 -->
+                    <div class="relative flex items-center justify-between mb-12 group">
+                        <div class="w-5/12 text-right pr-8">
+                            <span class="text-xs font-bold text-blue-600">Phase 1: 지역 거점 안착</span>
+                            <h4 class="font-bold text-slate-800 mt-1 text-sm">2026. 04 ~ 07</h4>
+                            <p class="text-xs text-slate-500 mt-2">영남권 500개 거래처 대상 실증 및 데이터 정합성 확보</p>
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-sm z-10"></div>
+                        <div class="w-5/12 pl-8 hidden md:block">
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 text-[10px] text-slate-500 italic">
+                                MVP 개발 및 API 연동 완료
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roadmap Item 2 -->
+                    <div class="relative flex items-center justify-between mb-12 group">
+                        <div class="w-5/12 pr-8 hidden md:block">
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 text-[10px] text-slate-500 italic text-right">
+                                주요 HACCP 솔루션사 3곳 이상 연동
+                            </div>
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-300 border-4 border-white shadow-sm z-10 group-hover:bg-blue-600 transition"></div>
+                        <div class="w-5/12 pl-8">
+                            <span class="text-xs font-bold text-slate-400 group-hover:text-blue-600 transition">Phase 2: 전국구 확대</span>
+                            <h4 class="font-bold text-slate-800 mt-1 text-sm">2026. 08 ~ 12</h4>
+                            <p class="text-xs text-slate-500 mt-2">메이저 스마트 HACCP 솔루션사 및 전국 식품검사 네트워크 연동</p>
+                        </div>
+                    </div>
+
+                    <!-- Roadmap Item 3 -->
+                    <div class="relative flex items-center justify-between group">
+                        <div class="w-5/12 text-right pr-8">
+                            <span class="text-xs font-bold text-slate-400 group-hover:text-blue-600 transition">Phase 3: 고부가가치 서비스</span>
+                            <h4 class="font-bold text-slate-800 mt-1 text-sm">2027. 01 ~</h4>
+                            <p class="text-xs text-slate-500 mt-2">AI 수요 예측 기반 원료 선매입 및 자동 기록 관리 프리미엄 SaaS 도입</p>
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-300 border-4 border-white shadow-sm z-10 group-hover:bg-blue-600 transition"></div>
+                        <div class="w-5/12 pl-8 hidden md:block">
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100 text-[10px] text-slate-500 italic">
+                                바잉 파워 기반 B2B 금융 서비스 확장
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Info -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200">
+                <h3 class="font-bold text-lg text-slate-900 mb-4">조직 및 실행 인프라</h3>
+                <div class="flex flex-wrap gap-3">
+                    <div class="flex-grow min-w-[200px] p-4 bg-slate-50 rounded-lg flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">홍</div>
+                        <div>
+                            <span class="block text-xs font-bold text-blue-600">대표자 홍준표</span>
+                            <span class="text-sm font-bold">플랫폼 아키텍트</span>
+                            <p class="text-[10px] text-slate-500">13년차 식품유통 전문가</p>
+                        </div>
+                    </div>
+                    <div class="flex-grow min-w-[200px] p-4 bg-slate-50 rounded-lg border border-dashed border-slate-300 flex items-center justify-center">
+                        <span class="text-xs text-slate-400 font-bold">+ 신규 채용 예정 전문가 5인</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-50 border-t border-slate-200 p-6 text-center">
+        <p class="text-xs text-slate-400 mb-2">본 대시보드는 2026년 재도전성공패키지 사업계획서를 기반으로 제작되었습니다.</p>
+        <p class="text-xs font-bold text-slate-500">© 2026 (주)한국표준분석연구원 (KISA). All rights reserved.</p>
+    </footer>
+</div>
+
+<script>
+    // State Management
+    let currentSection = 'home';
+    const sections = ['home', 'strategy', 'tech', 'business', 'roadmap'];
+    let revenueChart, budgetChart;
+
+    // Section Navigation
+    function showSection(id) {
+        sections.forEach(s => {
+            document.getElementById(`sec-${s}`).classList.add('hidden');
+            document.getElementById(`tab-${s}`).classList.remove('tab-active');
+            document.getElementById(`tab-${s}`).classList.add('text-slate-500');
+        });
+
+        document.getElementById(`sec-${id}`).classList.remove('hidden');
+        document.getElementById(`tab-${id}`).classList.add('tab-active');
+        document.getElementById(`tab-${id}`).classList.remove('text-slate-500');
+        
+        currentSection = id;
+        
+        if (id === 'business') {
+            initCharts();
+        }
+    }
+
+    // Chart.js Initialization
+    function initCharts() {
+        if (revenueChart) revenueChart.destroy();
+        if (budgetChart) budgetChart.destroy();
+
+        // Revenue Chart (Doughnut)
+        const revCtx = document.getElementById('revenueChart').getContext('2d');
+        revenueChart = new Chart(revCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['직접 유통 마진', '시스템 수수료', 'SaaS 구독', '기타 광고'],
+                datasets: [{
+                    data: [65, 15, 10, 10],
+                    backgroundColor: ['#2563eb', '#059669', '#f97316', '#94a3b8'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // Budget Chart (Horizontal Bar)
+        const budCtx = document.getElementById('budgetChart').getContext('2d');
+        budgetChart = new Chart(budCtx, {
+            type: 'bar',
+            data: {
+                labels: ['인건비', '외주비', '임대료/수수료', '기계장치/홍보'],
+                datasets: [{
+                    label: '집행 금액 (만원)',
+                    data: [4460, 1380, 1000, 500],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                    y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+    }
+
+    // Animation on load
+    window.onload = () => {
+        document.body.classList.add('opacity-0');
+        setTimeout(() => {
+            document.body.classList.remove('opacity-0');
+            document.body.classList.add('transition-opacity', 'duration-500', 'opacity-100');
+        }, 100);
+    };
+</script>
+
+</body>
+</html>
