@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 종이 질감 모션그래픽 교육 커리큘럼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f7f3f0;
+            color: #3d3d3d;
+        }
+
+        .paper-texture {
+            background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+
+        .step-card {
+            transition: all 0.3s ease;
+        }
+
+        .step-card.active {
+            border-left: 8px solid #d97706;
+            background-color: #ffffff;
+        }
+
+        .tool-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        /* Hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="paper-texture">
+
+    <nav class="sticky top-0 z-50 bg-[#f7f3f0] border-b border-stone-200 px-4 py-3 shadow-sm">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-black text-amber-900 tracking-tighter">AI PAPER MOTION <span class="font-light text-stone-500">EDU</span></h1>
+            <div class="space-x-4 text-sm font-medium hidden md:block">
+                <a href="#overview" class="hover:text-amber-700 transition">개요</a>
+                <a href="#tools" class="hover:text-amber-700 transition">사용 도구</a>
+                <a href="#workflow" class="hover:text-amber-700 transition">제작 과정</a>
+                <a href="#curriculum" class="hover:text-amber-700 transition">커리큘럼</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6 space-y-12">
+        
+        <!-- Header Section -->
+        <section id="overview" class="text-center space-y-4 py-10">
+            <div class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full mb-2">EBS/Vox 스타일 마스터 과정</div>
+            <h2 class="text-4xl md:text-5xl font-black text-stone-800">종이 질감 모션그래픽 제작</h2>
+            <p class="text-stone-600 max-w-2xl mx-auto leading-relaxed">
+                복잡한 전문 툴 없이 AI 기술만으로 고품질의 스톱모션 감성 영상을 완성합니다. 
+                비주얼 기획부터 사운드 합성까지, 크리에이터를 위한 최적의 워크플로우를 탐험해보세요.
+            </p>
+        </section>
+
+        <!-- Tools & Distribution -->
+        <section id="tools" class="bg-white rounded-3xl p-8 shadow-xl border border-stone-100">
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold mb-2">🛠️ 핵심 AI 도구 생태계</h3>
+                <p class="text-stone-500 text-sm">각 단계별 도구의 기여도와 역할을 분석합니다.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="chart-container">
+                    <canvas id="toolsChart"></canvas>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 bg-stone-50 rounded-xl border border-stone-100">
+                            <span class="text-xl mb-2 block">🎨</span>
+                            <h4 class="font-bold text-sm">Google Flow</h4>
+                            <p class="text-xs text-stone-500">메인 씬 생성 및 시각적 일관성 유지</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-xl border border-stone-100">
+                            <span class="text-xl mb-2 block">🏃</span>
+                            <h4 class="font-bold text-sm">Seedance</h4>
+                            <p class="text-xs text-stone-500">종이 질감 특유의 스톱모션 부여</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-xl border border-stone-100">
+                            <span class="text-xl mb-2 block">🎙️</span>
+                            <h4 class="font-bold text-sm">AI Studio</h4>
+                            <p class="text-xs text-stone-500">성우급 품질의 고품질 무료 TTS</p>
+                        </div>
+                        <div class="p-4 bg-stone-50 rounded-xl border border-stone-100">
+                            <span class="text-xl mb-2 block">✂️</span>
+                            <h4 class="font-bold text-sm">CapCut</h4>
+                            <p class="text-xs text-stone-500">최종 합성 및 종이 질감 SFX 디자인</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Workflow -->
+        <section id="workflow" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h3 class="text-2xl font-bold">📖 단계별 상세 실습 가이드</h3>
+                    <p class="text-stone-500">각 카드를 클릭하여 상세 정보와 프롬프트 팁을 확인하세요.</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="text-xs bg-stone-200 px-2 py-1 rounded">총 5단계</span>
+                    <span class="text-xs bg-stone-200 px-2 py-1 rounded">FHD 출력 기준</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Step Selector -->
+                <div class="lg:col-span-4 space-y-3">
+                    <div onclick="showStep(1)" class="step-card p-4 rounded-xl cursor-pointer border border-stone-200 bg-stone-50/50 hover:bg-white active" id="stepBtn1">
+                        <span class="text-xs font-bold text-amber-600">STEP 01</span>
+                        <h4 class="font-bold">기획 및 레퍼런스</h4>
+                    </div>
+                    <div onclick="showStep(2)" class="step-card p-4 rounded-xl cursor-pointer border border-stone-200 bg-stone-50/50 hover:bg-white" id="stepBtn2">
+                        <span class="text-xs font-bold text-amber-600">STEP 02</span>
+                        <h4 class="font-bold">구글 Flow 씬 생성</h4>
+                    </div>
+                    <div onclick="showStep(3)" class="step-card p-4 rounded-xl cursor-pointer border border-stone-200 bg-stone-50/50 hover:bg-white" id="stepBtn3">
+                        <span class="text-xs font-bold text-amber-600">STEP 03</span>
+                        <h4 class="font-bold">시댄스 모션 강화</h4>
+                    </div>
+                    <div onclick="showStep(4)" class="step-card p-4 rounded-xl cursor-pointer border border-stone-200 bg-stone-50/50 hover:bg-white" id="stepBtn4">
+                        <span class="text-xs font-bold text-amber-600">STEP 04</span>
+                        <h4 class="font-bold">구글 AI Studio TTS</h4>
+                    </div>
+                    <div onclick="showStep(5)" class="step-card p-4 rounded-xl cursor-pointer border border-stone-200 bg-stone-50/50 hover:bg-white" id="stepBtn5">
+                        <span class="text-xs font-bold text-amber-600">STEP 05</span>
+                        <h4 class="font-bold">최종 컷 편집 및 SFX</h4>
+                    </div>
+                </div>
+
+                <!-- Step Detail Display -->
+                <div class="lg:col-span-8 bg-white rounded-3xl p-8 shadow-sm border border-stone-100 min-h-[400px]">
+                    <div id="stepContent" class="space-y-6">
+                        <!-- Initial Content will be loaded by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Curriculum Table -->
+        <section id="curriculum" class="space-y-6">
+            <h3 class="text-2xl font-bold">🏫 차시별 교수-학습 지도안</h3>
+            <div class="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-sm">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-stone-50">
+                        <tr>
+                            <th class="p-4 border-b border-stone-200 text-sm font-bold w-20">차시</th>
+                            <th class="p-4 border-b border-stone-200 text-sm font-bold">주제</th>
+                            <th class="p-4 border-b border-stone-200 text-sm font-bold">주요 활동</th>
+                            <th class="p-4 border-b border-stone-200 text-sm font-bold">성과물</th>
+                        </tr>
+                    </thead>
+                    <tbody id="curriculumBody">
+                        <!-- Data will be populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer Checklist -->
+        <section class="bg-amber-900 text-amber-50 rounded-3xl p-8 md:p-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">💡 학습자 체크리스트</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded border border-amber-600 flex items-center justify-center text-[10px]">✔</span>
+                            <span>프롬프트에 'paper cutout', 'torn edges'를 포함했는가?</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded border border-amber-600 flex items-center justify-center text-[10px]">✔</span>
+                            <span>구글 Flow 시트로 모든 컷의 스타일을 고정했는가?</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded border border-amber-600 flex items-center justify-center text-[10px]">✔</span>
+                            <span>나레이션 억양을 'Documentary tone'으로 설정했는가?</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-5 h-5 rounded border border-amber-600 flex items-center justify-center text-[10px]">✔</span>
+                            <span>종이 바스락거리는 효과음(SFX)을 싱크에 맞췄는가?</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-amber-800/50 p-6 rounded-2xl border border-amber-700/50">
+                    <p class="italic text-amber-200 text-sm mb-4">"도구는 거들 뿐, 감각은 레퍼런스에서 나옵니다. 핀터레스트를 충분히 탐색하세요."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-amber-900 font-bold">AI</div>
+                        <div>
+                            <p class="font-bold text-sm text-white">교육 도우미</p>
+                            <p class="text-xs text-amber-400">Wonka AI 기반 가이드</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="max-w-6xl mx-auto p-6 text-center text-stone-400 text-xs border-t border-stone-200 mb-10">
+        &copy; 2024 AI Paper Motion Graphics Education. All rights reserved.
+    </footer>
+
+    <script>
+        // Data Structure
+        const steps = {
+            1: {
+                title: "컨셉 기획 및 레퍼런스 수집",
+                time: "00:00 ~ 03:10",
+                tool: "Pinterest",
+                desc: "Vox나 EBS 다큐멘터리의 시각적 스타일을 분석하고, 나만의 무드보드를 제작합니다.",
+                items: [
+                    "핀터레스트 검색 키워드 활용: 'Paper cutout art', 'Vintage collage'",
+                    "종이의 거친 단면, 레이어의 깊이감, 색상 팔레트 결정",
+                    "메인 비주얼 기준 이미지(Base Reference) 1장 선정"
+                ],
+                tip: "단순히 예쁜 이미지가 아니라, '움직였을 때 예쁠 것 같은' 구조를 찾으세요."
+            },
+            2: {
+                title: "구글 Flow로 씬 및 이미지 생성",
+                time: "04:07 ~ 09:28",
+                tool: "Google Flow (Flow Omni)",
+                desc: "일관된 질감을 가진 여러 개의 연관 컷을 한 번에 생성합니다.",
+                items: [
+                    "필수 프롬프트: layered paper art, torn paper edges, stop motion",
+                    "시트(Sheet) 기능을 사용해 톤앤매너 고정",
+                    "무료 크레딧 효율적 관리 (계정 다각화 활용)"
+                ],
+                tip: "기준 이미지 프롬프트를 먼저 견고하게 짠 후 변형을 시도하세요."
+            },
+            3: {
+                title: "Seedance로 모션 퀄리티 레벨업",
+                time: "11:05 ~ 12:34",
+                tool: "Seedance (시댄스)",
+                desc: "정적인 종이 그림에 생동감 넘치는 '탁-탁' 튀는 모션을 부여합니다.",
+                items: [
+                    "생성 이미지를 시댄스에 업로드하여 영상화",
+                    "Frame-by-frame 컷 효과 적용하여 스톱모션 느낌 강화",
+                    "종이 텍스처의 미세한 흔들림(Vibration) 효과 유지"
+                ],
+                tip: "너무 부드러운 움직임보다는 의도적으로 끊기는 느낌이 종이 질감에는 더 잘 어울립니다."
+            },
+            4: {
+                title: "구글 AI 스튜디오 무료 TTS 제작",
+                time: "12:35 ~ 14:22",
+                tool: "Google AI Studio",
+                desc: "Gemini 모델 기반의 고품질 음성을 추출하여 영상의 전문성을 높입니다.",
+                items: [
+                    "대본 입력 후 'Documentary narrator tone' 지시문 사용",
+                    "고품질 오디오 파일(WAV/MP3) 직접 추출",
+                    "한국어 억양의 자연스러움 최종 체크"
+                ],
+                tip: "단순 읽기가 아닌 감정(informative, calm)을 지시하면 훨씬 좋습니다."
+            },
+            5: {
+                title: "컷 편집 및 사운드 디자인",
+                time: "14:23 ~ 종료",
+                tool: "CapCut (PC/Mobile)",
+                desc: "모든 소스를 합치고 종이 특유의 효과음(SFX)을 입혀 생동감을 완성합니다.",
+                items: [
+                    "TTS 나레이션 박자에 맞춰 영상 클립 속도 조절",
+                    "핵심 SFX: Paper tear, Paper rustle, Page turn 삽입",
+                    "최종 1080p 해상도 렌더링"
+                ],
+                tip: "소리가 시각적 깊이를 결정합니다. 종이가 찢어지는 순간엔 반드시 소리를 넣으세요!"
+            }
+        };
+
+        const curriculum = [
+            { id: "1차시", theme: "기획 & 레퍼런스", activity: "종이 질감 특징 분석 및 무드보드 작성", output: "핀터레스트 보드" },
+            { id: "2차시", theme: "구글 Flow 실습", activity: "프롬프트 조합 및 일관성 있는 씬 생성", output: "이미지 에셋 팩" },
+            { id: "3차시", theme: "모션 & TTS", activity: "시댄스 애니메이션 및 AI 스튜디오 음성 생성", output: "비디오/오디오 소스" },
+            { id: "4차시", theme: "합성 & 완성", activity: "타임라인 편집 및 종이 SFX 사운드 디자인", output: "최종 1분 영상" }
+        ];
+
+        // Functions
+        function showStep(id) {
+            const step = steps[id];
+            const content = document.getElementById('stepContent');
+            
+            // Update buttons
+            document.querySelectorAll('.step-card').forEach(btn => btn.classList.remove('active', 'bg-white'));
+            document.getElementById(`stepBtn${id}`).classList.add('active', 'bg-white');
+
+            // Render content
+            content.innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                    <div>
+                        <span class="tool-tag bg-amber-600 text-white">${step.tool}</span>
+                        <span class="text-xs text-stone-400 font-mono">${step.time}</span>
+                        <h3 class="text-2xl font-black mt-2">${step.title}</h3>
+                    </div>
+                </div>
+                <p class="text-stone-600 border-l-4 border-stone-200 pl-4 py-1 italic">${step.desc}</p>
+                <div class="space-y-4">
+                    <h5 class="font-bold text-sm text-stone-800">✅ 실습 핵심 포인트</h5>
+                    <ul class="space-y-3">
+                        ${step.items.map(item => `
+                            <li class="flex items-start gap-2 text-sm text-stone-600">
+                                <span class="text-amber-600 font-bold mt-1">▸</span>
+                                <span>${item}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                <div class="p-4 bg-amber-50 rounded-2xl border border-amber-100 mt-6">
+                    <p class="text-xs font-bold text-amber-800 mb-1 uppercase tracking-widest">Master's Tip</p>
+                    <p class="text-sm text-amber-700">${step.tip}</p>
+                </div>
+            `;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('toolsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['비주얼(Flow)', '모션(Seedance)', '음성(AI Studio)', '편집(CapCut)'],
+                    datasets: [{
+                        data: [40, 20, 15, 25],
+                        backgroundColor: ['#d97706', '#f59e0b', '#fbbf24', '#78350f'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 11 },
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function initCurriculum() {
+            const body = document.getElementById('curriculumBody');
+            curriculum.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-stone-50 transition-colors";
+                row.innerHTML = `
+                    <td class="p-4 border-b border-stone-100 text-sm font-bold text-amber-700">${item.id}</td>
+                    <td class="p-4 border-b border-stone-100 text-sm font-bold">${item.theme}</td>
+                    <td class="p-4 border-b border-stone-100 text-sm text-stone-600 leading-snug">${item.activity}</td>
+                    <td class="p-4 border-b border-stone-100">
+                        <span class="text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 font-medium">${item.output}</span>
+                    </td>
+                `;
+                body.appendChild(row);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            initCurriculum();
+            showStep(1);
+        });
+    </script>
+</body>
+</html>
