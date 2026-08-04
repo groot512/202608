@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News Startup Strategy Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --bg-warm: #F9F8F6;
+            --card-white: #FFFFFF;
+            --accent-sage: #8BA888;
+            --accent-blue: #7B99B9;
+            --text-main: #2D2D2D;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: var(--bg-warm);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        .step-active {
+            border-left: 4px solid var(--accent-sage);
+            background-color: rgba(139, 168, 136, 0.05);
+        }
+
+        .nav-item.active {
+            color: var(--accent-sage);
+            border-bottom: 2px solid var(--accent-sage);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Chosen Palette: Warm Minimalist (Cream, Sage Green, Slate Blue) -->
+    <!-- Application Structure Plan: 
+        1. Dashboard Header: 제목 및 핵심 목표 제시.
+        2. Main Navigation: 벤치마킹 분석, 카테고리 설계, 설립 로드맵, 성장 전략의 4개 탭 구성.
+        3. Market Analysis View: 두 매체의 지향점을 차트로 시각화하여 포지셔닝 파악 지원.
+        4. Category Designer: 실제 메뉴 구조를 어떻게 짤지 인터랙티브한 카드 형식으로 제공.
+        5. Setup Roadmap: 무경험자를 위해 1단계부터 4단계까지 클릭 시 세부 체크리스트를 보여주는 프로세스 뷰.
+        6. Strategy & BM: 초기 생존을 위한 콘텐츠 및 수익화 팁 제안.
+        선택 이유: 텍스트 위주의 보고서를 사용자 여정(분석->기획->실행->성장)에 맞게 재배치하여 단계별 몰입도를 높임.
+    -->
+    <!-- Visualization & Content Choices:
+        - Radar/Bar Charts (Chart.js): 두 신문사의 타깃층 및 콘텐츠 성격 비교 (비교 시각화).
+        - Step-through Timeline: 설립 행정 절차를 시간 순으로 안내 (변화 및 과정).
+        - Categorized Cards: 메뉴 구조 시각화 (조직화).
+        - Icon-based Strategy Cards: 콘텐츠 수급 및 수익화 전략 요약 (정보 제공).
+        - Justification: 데이터의 성격에 따라 비교는 차트, 프로세스는 타임라인으로 구성하여 가독성 극대화.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <span class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-sage-600 uppercase bg-sage-100 rounded-full" style="color: #6d856b; background-color: #e2ede1;">New Media Launch Guide</span>
+            <h1 class="text-4xl font-bold mb-4 tracking-tight">AI 인터넷 신문사 창간 전략 가이드</h1>
+            <p class="text-gray-600 max-w-2xl mx-auto">경험 없는 예비 발행인을 위한 국내 주요 AI 미디어 벤치마킹 및 단계별 설립 로드맵 대시보드입니다.</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="flex justify-center space-x-8 mb-12 border-b border-gray-200">
+            <button onclick="switchTab('market')" id="nav-market" class="nav-item active pb-4 px-2 font-medium transition-all">시장 분석</button>
+            <button onclick="switchTab('category')" id="nav-category" class="nav-item pb-4 px-2 font-medium transition-all">카테고리 기획</button>
+            <button onclick="switchTab('roadmap')" id="nav-roadmap" class="nav-item pb-4 px-2 font-medium transition-all">설립 로드맵</button>
+            <button onclick="switchTab('growth')" id="nav-growth" class="nav-item pb-4 px-2 font-medium transition-all">성장 전략</button>
+        </nav>
+
+        <!-- Section: Market Analysis -->
+        <section id="section-market" class="tab-content block">
+            <div class="bg-white rounded-2xl shadow-sm p-8 mb-8 border border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4 text-gray-800">두 매체의 포지셔닝 비교</h2>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            AI타임스는 대중적인 트렌드와 산업 중심의 <strong>종합 일간지</strong> 성격을 띠는 반면, 인공지능신문은 기술 연구와 개발자 중심의 <strong>B2B 기술 저널</strong>에 가깝습니다. 당신의 매체가 어느 지점에 위치할지 결정하는 것이 첫 번째 단계입니다.
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 w-5 h-5 mt-1 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xs">A</span>
+                                <div class="ml-3">
+                                    <span class="font-semibold block">AI타임스 (aitimes.com)</span>
+                                    <span class="text-sm text-gray-500">대중성, 비즈니스 기획자, 정책, 스타트업 소식 위주</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 w-5 h-5 mt-1 bg-sage-100 rounded-full flex items-center justify-center text-sage-600 font-bold text-xs">B</span>
+                                <div class="ml-3">
+                                    <span class="font-semibold block">인공지능신문 (aitimes.kr)</span>
+                                    <span class="text-sm text-gray-500">기술 전문성, 개발자, 알고리즘, 하드웨어 분석 위주</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3">AI타임스 UI/UX 특징</h3>
+                    <p class="text-sm text-gray-600">종합 뉴스 포털 형태의 그리드 레이아웃을 사용하며, 직관적인 카테고리 구성으로 비전문가도 접근하기 쉬운 디자인을 채택하고 있습니다.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                    <h3 class="font-bold text-lg mb-3">인공지능신문 UI/UX 특징</h3>
+                    <p class="text-sm text-gray-600">미니멀한 학술지 스타일로, 고품질의 기술 아키텍처 이미지와 텍스트 중심의 정돈된 레이아웃을 통해 전문성을 강조합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Category Design -->
+        <section id="section-category" class="tab-content hidden">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold mb-2">효율적인 카테고리(Taxonomy) 설계</h2>
+                <p class="text-gray-600">성공적인 AI 미디어를 위한 카테고리 구성 가이드를 확인하세요.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Tech Card -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4 text-blue-500">
+                        <span class="text-2xl">⚙️</span>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2 text-gray-800">기술 (Tech)</h3>
+                    <p class="text-sm text-gray-500 mb-4">알고리즘, 생성형 AI 신기술, 딥러닝 이론 등</p>
+                    <div class="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
+                        <strong class="text-blue-600">Expert Advice:</strong> 초기에는 1~2개로 단순화하고, 전문 필진 확보 후 세부 기술군으로 분류하세요.
+                    </div>
+                </div>
+                <!-- Business Card -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mb-4 text-green-500">
+                        <span class="text-2xl">🏢</span>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2 text-gray-800">산업 (Industry)</h3>
+                    <p class="text-sm text-gray-500 mb-4">기업 소식, 하드웨어(반도체), B2B 솔루션 등</p>
+                    <div class="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
+                        <strong class="text-green-600">Expert Advice:</strong> 현재 트렌드인 '반도체'와 'SaaS'를 구분하여 전문성을 확보하는 것이 중요합니다.
+                    </div>
+                </div>
+                <!-- People & Focus Card -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4 text-purple-500">
+                        <span class="text-2xl">💡</span>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2 text-gray-800">기획/오피니언</h3>
+                    <p class="text-sm text-gray-500 mb-4">심층 분석, 전문가 칼럼, 미래 영향 분석</p>
+                    <div class="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
+                        <strong class="text-purple-600">Expert Advice:</strong> 고유 코너(예: AI 규제 분석)가 미디어 신뢰성을 높이는 핵심 자산이 됩니다.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Roadmap -->
+        <section id="section-roadmap" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-1 space-y-4">
+                    <div id="step-btn-1" onclick="showStep(1)" class="step-active p-4 rounded-lg cursor-pointer transition-all border border-transparent hover:border-gray-200">
+                        <span class="text-xs font-bold text-sage-600 block mb-1">STEP 01</span>
+                        <h3 class="font-bold">기획 및 도메인 선점</h3>
+                    </div>
+                    <div id="step-btn-2" onclick="showStep(2)" class="p-4 rounded-lg cursor-pointer transition-all border border-transparent hover:border-gray-200">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">STEP 02</span>
+                        <h3 class="font-bold">행정 및 법적 등록</h3>
+                    </div>
+                    <div id="step-btn-3" onclick="showStep(3)" class="p-4 rounded-lg cursor-pointer transition-all border border-transparent hover:border-gray-200">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">STEP 03</span>
+                        <h3 class="font-bold">기술 인프라 (CMS) 도입</h3>
+                    </div>
+                    <div id="step-btn-4" onclick="showStep(4)" class="p-4 rounded-lg cursor-pointer transition-all border border-transparent hover:border-gray-200">
+                        <span class="text-xs font-bold text-gray-400 block mb-1">STEP 04</span>
+                        <h3 class="font-bold">콘텐츠 수급 및 오픈</h3>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm p-8 border border-gray-100 min-h-[400px]">
+                    <div id="step-content-1">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                            기획 및 제호 결정
+                        </h3>
+                        <div class="space-y-4 text-gray-600 leading-relaxed">
+                            <p>가장 먼저 어떤 이름을 사용할지 결정해야 합니다. 문체부 <strong>정기간행물 등록관리시스템</strong>에서 중복 제호를 반드시 확인하세요.</p>
+                            <div class="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400 text-sm">
+                                <strong>주의사항:</strong> 도메인은 반드시 발행 주체(회사 또는 대표자) 명의로 직접 등록해야 설립 허가가 가능합니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step-content-2" class="hidden">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                            지자체 등록 절차
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold mb-2">필수 요건</h4>
+                                <ul class="list-disc ml-4 space-y-1">
+                                    <li>발행인/편집인 1인 이상</li>
+                                    <li>취재 및 편집 인력 (명부 필요)</li>
+                                    <li>자체 기사 비율 30% 유지</li>
+                                    <li>물리적 사무공간 확보</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold mb-2">필요 서류</h4>
+                                <ul class="list-disc ml-4 space-y-1">
+                                    <li>등록신청서 (지자체 서식)</li>
+                                    <li>기본증명서 (상세)</li>
+                                    <li>임대차계약서 사본</li>
+                                    <li>도메인 등록 확인서</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step-content-3" class="hidden">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                            CMS 인프라 구축
+                        </h3>
+                        <p class="text-gray-600 mb-6">자체 개발보다는 검증된 임대형 CMS를 사용하는 것이 비용과 시간 측면에서 유리합니다.</p>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 border border-gray-100 rounded-lg">
+                                <span class="font-medium text-gray-700">엔디소프트 (NDSoft)</span>
+                                <span class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded">시장 점유율 1위</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 border border-gray-100 rounded-lg">
+                                <span class="font-medium text-gray-700">미디어온 (MediaOn)</span>
+                                <span class="text-xs bg-green-50 text-green-600 px-2 py-1 rounded">합리적 가격 / 초보 추천</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 border border-gray-100 rounded-lg">
+                                <span class="font-medium text-gray-700">다다미디어</span>
+                                <span class="text-xs bg-purple-50 text-purple-600 px-2 py-1 rounded">컨설팅 포함</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step-content-4" class="hidden">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <span class="w-8 h-8 bg-sage-500 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                            린(Lean) 미디어 오픈 전략
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="mt-1 mr-3">📍</div>
+                                <div>
+                                    <h4 class="font-bold">보도자료 플랫폼 활용</h4>
+                                    <p class="text-sm text-gray-500 italic">뉴스와이어 등을 통해 데일리 기사 물량을 확보하십시오.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="mt-1 mr-3">📍</div>
+                                <div>
+                                    <h4 class="font-bold">AI 활용 외신 큐레이션</h4>
+                                    <p class="text-sm text-gray-500 italic">DeepL과 LLM을 활용해 글로벌 테크 소식을 빠르게 한국 시장에 맞게 재구성하세요.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Growth Strategy -->
+        <section id="section-growth" class="tab-content hidden">
+            <div class="bg-gray-900 text-white rounded-2xl overflow-hidden shadow-xl">
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl font-bold mb-8">지속 가능한 운영을 위한 핵심 조언</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div>
+                            <div class="mb-8">
+                                <h3 class="text-sage-400 font-bold text-xl mb-3 flex items-center">
+                                    <span class="mr-2">🚀</span> 포지셔닝: Micro-Niche
+                                </h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">범용 AI 뉴스보다는 'AI 에이전트 전문', 'K-뷰티/바이오 융합 AI' 등 특화된 영역을 먼저 점유하십시오. 작게 시작해야 이길 수 있습니다.</p>
+                            </div>
+                            <div>
+                                <h3 class="text-sage-400 font-bold text-xl mb-3 flex items-center">
+                                    <span class="mr-2">💰</span> 수익화: 광고 의존 탈피
+                                </h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">트래픽이 적은 초기에 배너 광고는 수익이 나지 않습니다. B2B 기획 홍보 패키지나 기업 전용 웨비나 대행을 비즈니스 모델로 설계하세요.</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                            <h4 class="text-white font-bold mb-4">최종 체크포인트: 무경험자 액션 플랜</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" class="w-4 h-4 rounded text-sage-500 bg-gray-700 border-gray-600">
+                                    <span class="text-sm">직접 기사 10개 써보기 (지속 가능성 테스트)</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" class="w-4 h-4 rounded text-sage-500 bg-gray-700 border-gray-600">
+                                    <span class="text-sm">구글 뉴스 퍼블리셔 센터 조기 등록 (SEO 대비)</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" class="w-4 h-4 rounded text-sage-500 bg-gray-700 border-gray-600">
+                                    <span class="text-sm">타겟 도메인 가용성 및 중복 제호 확인</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <input type="checkbox" class="w-4 h-4 rounded text-sage-500 bg-gray-700 border-gray-600">
+                                    <span class="text-sm">외부 전문가 필진(대학원생 등) 리스트업</span>
+                                </div>
+                            </div>
+                            <button class="w-full mt-8 py-3 bg-sage-500 hover:bg-sage-600 text-white rounded-lg font-bold transition-colors">전략 가이드 PDF 다운로드</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-gray-400 text-sm pb-8">
+            <p>© 2024 AI Media Establishment Guide. All content based on aitimes.com & aitimes.kr benchmarking.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab Navigation Logic
+        function switchTab(tabId) {
+            // Update Navigation UI
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-' + tabId).classList.add('active');
+
+            // Show/Hide Sections
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('section-' + tabId).classList.remove('hidden');
+
+            // If switching to market, re-render chart to ensure proper sizing
+            if (tabId === 'market') {
+                renderMarketChart();
+            }
+        }
+
+        // Roadmap Step Logic
+        function showStep(stepNum) {
+            // Update Button Styles
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById('step-btn-' + i);
+                const title = btn.querySelector('span');
+                if (i === stepNum) {
+                    btn.classList.add('step-active');
+                    title.classList.replace('text-gray-400', 'text-sage-600');
+                } else {
+                    btn.classList.remove('step-active');
+                    title.classList.replace('text-sage-600', 'text-gray-400');
+                }
+                
+                // Show/Hide Content
+                const content = document.getElementById('step-content-' + i);
+                if (i === stepNum) {
+                    content.classList.remove('hidden');
+                } else {
+                    content.classList.add('hidden');
+                }
+            }
+        }
+
+        // Market Analysis Chart
+        let marketChart = null;
+        function renderMarketChart() {
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            
+            if (marketChart) marketChart.destroy();
+
+            marketChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['대중성/산업', '기술 전문성', 'UI 직관성', '글로벌/학술', '수익 모델 다양성'],
+                    datasets: [
+                        {
+                            label: 'AI타임스 (종합)',
+                            data: [90, 60, 85, 50, 80],
+                            backgroundColor: 'rgba(123, 153, 185, 0.7)',
+                            borderColor: 'rgba(123, 153, 185, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '인공지능신문 (기술)',
+                            data: [50, 95, 65, 90, 60],
+                            backgroundColor: 'rgba(139, 168, 136, 0.7)',
+                            borderColor: 'rgba(139, 168, 136, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 10 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 15,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            padding: 10
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        window.onload = function() {
+            renderMarketChart();
+        };
+    </script>
+</body>
+</html>
