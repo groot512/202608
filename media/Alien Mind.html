@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 협업 패러다임 & 실무 워크숍 핸드북</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f5ff',
+                            100: '#e5edff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Pretendard', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card-hover:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+            transition: all 0.2s ease-in-out;
+        }
+        .active-tab {
+            background-color: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-12">
+
+    <!-- Header / Hero Section -->
+    <header class="relative overflow-hidden border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-semibold uppercase tracking-wider mb-2">
+                        <i class="fa-solid me-1 fa-brain"></i> Wharton Prof. Ethan Mollick Insights
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                        AI 협업 패러다임 & 실무 프롬프트 워크숍
+                    </h1>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1">
+                        듀얼 브레인 시대의 생존법 · 기획자 & 비개발자를 위한 실무 프레임워크 핸드북
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 self-start md:self-auto">
+                    <button onclick="scrollToSection('prompt-generator')" class="px-4 py-2 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-lg transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 실무 프롬프트 생성기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="flex overflow-x-auto gap-2 p-1.5 bg-slate-800/60 rounded-2xl border border-slate-700/50 no-scrollbar">
+            <button onclick="switchTab('tab-summary')" id="btn-tab-summary" class="tab-btn active-tab flex-1 min-w-[120px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium transition-all text-center whitespace-nowrap flex items-center justify-center gap-2">
+                <i class="fa-solid fa-book-open"></i> 강연 핵심 요약
+            </button>
+            <button onclick="switchTab('tab-framework')" id="btn-tab-framework" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium text-slate-400 hover:text-white transition-all text-center whitespace-nowrap flex items-center justify-center gap-2">
+                <i class="fa-solid fa-list-check"></i> 실무 워크숍 3대 과제
+            </button>
+            <button onclick="switchTab('tab-generator')" id="btn-tab-generator" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium text-slate-400 hover:text-white transition-all text-center whitespace-nowrap flex items-center justify-center gap-2">
+                <i class="fa-solid fa-terminal"></i> 프롬프트 실습실
+            </button>
+            <button onclick="switchTab('tab-vibe')" id="btn-tab-vibe" class="tab-btn flex-1 min-w-[120px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium text-slate-400 hover:text-white transition-all text-center whitespace-nowrap flex items-center justify-center gap-2">
+                <i class="fa-solid fa-laptop-code"></i> Vibe Founding 데모
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 flex-1 w-full">
+
+        <!-- TAB 1: 강연 핵심 요약 -->
+        <section id="tab-summary" class="tab-content block space-y-6">
+            <!-- Hero Banner Quote -->
+            <div class="glass-card p-6 rounded-2xl border-l-4 border-brand-500 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 text-slate-800/40 text-8xl font-black select-none pointer-events-none">
+                    "
+                </div>
+                <p class="text-base sm:text-lg font-medium text-slate-200 leading-relaxed italic">
+                    "AI는 인간의 대체재가 아닌 <strong class="text-brand-400 font-bold">협력 파트너</strong>입니다. AI로 생산성을 올려 사람을 잘라내는 것은 혁신을 자해하는 행위입니다. 지금은 야망을 가진 사람이 가장 크게 보상받는 시대입니다."
+                </p>
+                <div class="mt-3 text-xs sm:text-sm text-slate-400 font-semibold">
+                    — 이선 몰릭 (Ethan Mollick) 펜실베이니아대 와튼스쿨 경영학과 교수
+                </div>
+            </div>
+
+            <!-- Modules Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Module 1 -->
+                <div class="glass-card p-6 rounded-2xl glass-card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg bg-brand-500/20 text-brand-400 text-xs font-bold">Module 01</span>
+                            <i class="fa-solid fa-ghost text-slate-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">AI는 '외계 지능(Alien Mind)'이다</h3>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-brand-400 text-[10px] mt-1.5"></i>
+                                <span><strong>SF의 착각 해제:</strong> 과거의 로봇처럼 차갑고 논리적인 계산기가 아니라, 공감·감정·문맥을 다루는 사람 같은 존재.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-brand-400 text-[10px] mt-1.5"></i>
+                                <span><strong>인지적 거리두기:</strong> 사람처럼 대화할 때 가장 일을 잘하지만 결코 사람은 아니기에 '외계 지능'이라는 거리가 필요함.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-brand-400 text-[10px] mt-1.5"></i>
+                                <span><strong>AI의 3요소:</strong> Model(두뇌) + App(인터페이스) + Harness(웹검색, 코드실행 등 손발이 되는 장비).</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Module 2 -->
+                <div class="glass-card p-6 rounded-2xl glass-card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg bg-accent-500/20 text-accent-400 text-xs font-bold">Module 02</span>
+                            <i class="fa-solid fa-graduation-cap text-slate-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">바람직한 어려움 & 튜터 모드</h3>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-accent-400 text-[10px] mt-1.5"></i>
+                                <span><strong>정답 자판기의 위험:</strong> AI에게 정답만 요구하면 뇌가 인지 노력을 멈추어 실제 학습이 일어나지 않음.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-accent-400 text-[10px] mt-1.5"></i>
+                                <span><strong>소크라테스 튜터:</strong> 정답을 즉각 주지 않고 퀴즈와 반문을 통해 수강생 스스로 깨닫게 유도.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-accent-400 text-[10px] mt-1.5"></i>
+                                <span><strong>비판자 페르소나:</strong> AI의 아첨(Sycophancy) 속성을 깨기 위해 "나에게 가장 혹독한 비판자가 되어줘" 지시.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Module 3 -->
+                <div class="glass-card p-6 rounded-2xl glass-card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-bold">Module 03</span>
+                            <i class="fa-solid fa-briefcase text-slate-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">직무 생존 전략과 조직 혁신</h3>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-emerald-400 text-[10px] mt-1.5"></i>
+                                <span><strong>T자형 인재:</strong> 한 분야의 깊은 전문성 + 주변 지식 + 안목(Taste) + 주도성(Agency).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-emerald-400 text-[10px] mt-1.5"></i>
+                                <span><strong>조직 삼각편대:</strong> Leadership(경영진 실행) + Lab(실험실 구축) + Crowd(전사 보급 및 원활한 환경).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-emerald-400 text-[10px] mt-1.5"></i>
+                                <span><strong>해고의 함정:</strong> AI 생산성 증가로 해고 시, 구성원들은 일자리를 위해 AI 사용을 숨기게 됨.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Module 4 -->
+                <div class="glass-card p-6 rounded-2xl glass-card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-bold">Module 04</span>
+                            <i class="fa-solid fa-rocket text-slate-500 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">과업의 재구성 & 지루한 비즈니스</h3>
+                        <ul class="space-y-2 text-xs sm:text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-amber-400 text-[10px] mt-1.5"></i>
+                                <span><strong>Job = Bundle of Tasks:</strong> 직업 전체가 사라지기보다 귀찮고 반복적인 단위 과업이 변혁됨.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-amber-400 text-[10px] mt-1.5"></i>
+                                <span><strong>Boring Business 창업:</strong> AI 고도화 기술 자체보다 세탁소, 골프장, 로컬 유통 등 지루한 현장 산업 혁신에 기회 폭발.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-dot text-amber-400 text-[10px] mt-1.5"></i>
+                                <span><strong>Vibe Founding:</strong> 코딩을 몰라도 AI 파트너를 활용해 3일 만에 사업 기획부터 작동하는 MVP까지 런칭.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: 실무 워크숍 3대 과제 -->
+        <section id="tab-framework" class="tab-content hidden space-y-6">
+            <div class="text-center max-w-2xl mx-auto mb-4">
+                <h2 class="text-xl sm:text-2xl font-bold text-white">기획자·비개발자 맞춤형 3단계 워크숍</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">강의 현장에서 수강생들이 즉시 실습할 수 있도록 설계된 실행 과제입니다.</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Task 1 Card -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-700/80">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-700/60">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-brand-500 text-white flex items-center justify-center font-bold text-sm">1</span>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-white">튜터 모드 실습 (Tutor Mode)</h3>
+                                <p class="text-xs text-slate-400">정답 자판기를 끄고 소크라테스식 질의응답으로 사고력 훈련</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 w-max">소요시간: 20분</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-brand-400 mb-1"><i class="fa-solid fa-bullseye me-1"></i> 과제 목표</div>
+                            <p class="text-slate-300">AI가 즉시 해답을 내놓지 못하게 통제하고, 내 기획의 허점을 반문하여 스킬 체화.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-brand-400 mb-1"><i class="fa-solid fa-gears me-1"></i> 주요 메커니즘</div>
+                            <p class="text-slate-300">1회 1질문 법칙, 설명 대신 반문 유도, 도멘케이스 기반 미니 퀴즈 연속 수행.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-brand-400 mb-1"><i class="fa-solid fa-chalkboard-user me-1"></i> 강사 코칭 포인트</div>
+                            <p class="text-slate-300">"모르겠으니 답 알려줘"금지! 틀리더라도 본인 생각으로 답을 쓰게 지휘.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task 2 Card -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-700/80">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-700/60">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-accent-500 text-white flex items-center justify-center font-bold text-sm">2</span>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-white">비판자 모드 실습 (Critic Mode / Red Teaming)</h3>
+                                <p class="text-xs text-slate-400">AI의 아첨을 차단하고 기획안의 치명적 결함을 사전 검증</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 w-max">소요시간: 25분</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-accent-400 mb-1"><i class="fa-solid fa-bullseye me-1"></i> 과제 목표</div>
+                            <p class="text-slate-300">임원 보고나 서비스 배포 전, AI를 회의적 심사역으로 만들어 기획 스트레스 테스트.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-accent-400 mb-1"><i class="fa-solid fa-gears me-1"></i> 주요 메커니즘</div>
+                            <p class="text-slate-300">칭찬 생략, 논리적 비약 지적, 이해관계자 저항 요소 발라내기, 킬러 질문 3개 추출.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-accent-400 mb-1"><i class="fa-solid fa-chalkboard-user me-1"></i> 강사 코칭 포인트</div>
+                            <p class="text-slate-300">"배포 후 고객에게 매맞는 것보다 AI에게 먼저 매맞는 것이 100배 싸다" 고지.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task 3 Card -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-700/80">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-700/60">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-sm">3</span>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold text-white">바이브 파운딩 실습 (Vibe Founding)</h3>
+                                <p class="text-xs text-slate-400">비개발자 기획자가 노코드로 동작하는 UI 프로토타입 직접 빌드</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 w-max">소요시간: 40분</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-emerald-400 mb-1"><i class="fa-solid fa-bullseye me-1"></i> 과제 목표</div>
+                            <p class="text-slate-300">문서 위주의 기획에서 벗어나 30분 만에 눈앞에서 작동하는 웹 MVP 구현.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-emerald-400 mb-1"><i class="fa-solid fa-gears me-1"></i> 주요 메커니즘</div>
+                            <p class="text-slate-300">지루한 전통 산업 문제 정의 -> 화면 스펙 작성 -> Claude/v0를 통해 단일 React/HTML 빌드.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-emerald-400 mb-1"><i class="fa-solid fa-chalkboard-user me-1"></i> 강사 코칭 포인트</div>
+                            <p class="text-slate-300">텍스트 지시문으로 즉각 버튼 인터랙션과 데이터 반응을 수정하는 경험 체감.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: 프롬프트 실습실 -->
+        <section id="tab-generator" class="tab-content hidden space-y-6">
+            <div id="prompt-generator" class="glass-card p-6 rounded-2xl border border-slate-700">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-brand-500/20 text-brand-400 rounded-xl">
+                        <i class="fa-solid fa-sliders text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white">맞춤형 프롬프트 오토 생성기</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">아래 변수를 입력하면 워크숍용 프롬프트가 즉시 생성됩니다.</p>
+                    </div>
+                </div>
+
+                <!-- Input Controls -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">프롬프트 모드 선택</label>
+                        <select id="input-mode" onchange="generatePrompt()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500">
+                            <option value="tutor">1. 튜터 모드 (소크라테스 질의)</option>
+                            <option value="critic">2. 비판자 모드 (레드팀 공격)</option>
+                            <option value="vibe">3. 바이브 파운딩 (MVP 코드 생성)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">내 직무 / 도메인</label>
+                        <input type="text" id="input-role" value="5년차 서비스 기획자" oninput="generatePrompt()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500" placeholder="예: e커머스 PO / 마케터">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">프로젝트 / 주제</label>
+                        <input type="text" id="input-topic" value="B2B 무인 세탁소 기기 모니터링 SaaS" oninput="generatePrompt()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500" placeholder="예: 신규 결제 시스템 도입">
+                    </div>
+                </div>
+
+                <!-- Generated Prompt Output -->
+                <div class="relative">
+                    <div class="flex items-center justify-between bg-slate-900 px-4 py-2.5 rounded-t-xl border-t border-x border-slate-800">
+                        <span class="text-xs font-semibold text-slate-400"><i class="fa-solid fa-code me-1"></i> 생성된 프롬프트 템플릿</span>
+                        <button onclick="copyPromptOutput()" class="px-3 py-1 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-medium transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사하기
+                        </button>
+                    </div>
+                    <pre id="prompt-output" class="bg-slate-950 p-4 rounded-b-xl border border-slate-800 text-xs sm:text-sm text-slate-200 font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed max-h-96"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: Vibe Founding 데모 -->
+        <section id="tab-vibe" class="tab-content hidden space-y-6">
+            <div class="glass-card p-6 rounded-2xl border border-slate-700">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-xs font-semibold mb-1">
+                            <i class="fa-solid fa-bolt"></i> Live Prototype Demo
+                        </div>
+                        <h2 class="text-lg sm:text-xl font-bold text-white">무인 세탁점 관제 MVP (Vibe Founding 결과물 예시)</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">기획자가 프롬프트 지시만으로 생성해낸 실제 작동 인터랙티브 UI 예시입니다.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="simulateAddAlert()" class="px-3 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white rounded-lg text-xs font-medium transition-all">
+                            <i class="fa-solid fa-triangle-exclamation me-1"></i> 가상 장애 발생
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Stats -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">가동 중 기기</div>
+                        <div class="text-xl font-extrabold text-white mt-1">12 / 14 대</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">오늘 예상 매출</div>
+                        <div class="text-xl font-extrabold text-emerald-400 mt-1">₩ 485,000</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">세제 잔여량</div>
+                        <div class="text-xl font-extrabold text-amber-400 mt-1">24% (보충필요)</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                        <div class="text-xs text-slate-400">실시간 경고</div>
+                        <div id="demo-alert-count" class="text-xl font-extrabold text-slate-400 mt-1">0 건</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Machine Grid -->
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">매장 기기 실시간 상태 (클릭하여 상태 토글)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                    <!-- Machine 1 -->
+                    <div onclick="toggleMachineStatus(this, '세탁기 #1')" class="cursor-pointer bg-slate-900/60 hover:bg-slate-800/80 p-4 rounded-xl border border-emerald-500/30 transition-all flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                <i class="fa-solid fa-soap text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white">세탁기 #1 (15kg)</div>
+                                <div class="status-text text-[11px] text-emerald-400">정상 작동 중 (18분 남음)</div>
+                            </div>
+                        </div>
+                        <span class="status-badge px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold">가동중</span>
+                    </div>
+
+                    <!-- Machine 2 -->
+                    <div onclick="toggleMachineStatus(this, '세탁기 #2')" class="cursor-pointer bg-slate-900/60 hover:bg-slate-800/80 p-4 rounded-xl border border-emerald-500/30 transition-all flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                <i class="fa-solid fa-soap text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white">세탁기 #2 (20kg)</div>
+                                <div class="status-text text-[11px] text-emerald-400">정상 작동 중 (34분 남음)</div>
+                            </div>
+                        </div>
+                        <span class="status-badge px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold">가동중</span>
+                    </div>
+
+                    <!-- Machine 3 -->
+                    <div onclick="toggleMachineStatus(this, '건조기 #1')" class="cursor-pointer bg-slate-900/60 hover:bg-slate-800/80 p-4 rounded-xl border border-amber-500/30 transition-all flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                                <i class="fa-solid fa-wind text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white">건조기 #1 (25kg)</div>
+                                <div class="status-text text-[11px] text-amber-400">대기 중 (사용 가능)</div>
+                            </div>
+                        </div>
+                        <span class="status-badge px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 font-semibold">대기</span>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-slate-900/40 rounded-xl border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                    <span><i class="fa-solid fa-circle-info text-brand-400 me-1"></i> 카드를 클릭하면 실시간 상태가 변경되는 인터랙션이 구동됩니다.</span>
+                    <span class="text-[11px] text-slate-500">Built with Vibe Founding Prompt</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 border border-brand-500/50 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50">
+        <i class="fa-solid fa-circle-check text-brand-400 text-lg"></i>
+        <span id="toast-message" class="text-xs sm:text-sm font-medium">클립보드에 복사되었습니다!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 text-center text-xs text-slate-500">
+        <p>© 2026 AI Co-Intelligence Lecture Handbook. Designed for Planners & Non-Developers.</p>
+    </footer>
+
+    <script>
+        // Tab Switcher
+        function switchTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.add('text-slate-400');
+            });
+
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+            }
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-slate-400');
+            }
+        }
+
+        function scrollToSection(id) {
+            switchTab('tab-generator');
+            setTimeout(() => {
+                const el = document.getElementById(id);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // Prompt Auto-Generator Logic
+        function generatePrompt() {
+            const mode = document.getElementById('input-mode').value;
+            const role = document.getElementById('input-role').value || '기획자';
+            const topic = document.getElementById('input-topic').value || '신규 프로젝트';
+
+            let promptText = "";
+
+            if (mode === 'tutor') {
+                promptText = `[역할 정의]\n너는 비즈니스 모델과 기획 논리를 훈련시키는 엄격하고 지적인 '소크라테스식 튜터'다.\n\n[상황 및 주제]\n- 내 직무: ${role}\n- 학습 주제: ${topic}\n- 목표: 정답을 전달받기보다, 직관적 질의응답을 통해 내 논리의 맹점을 스스로 깨닫고자 함.\n\n[작동 규칙]\n1. 나에게 절대 바로 '정답'이나 '완성된 가이드'를 설명하지 마라.\n2. 내가 원리를 파악할 수 있도록 핵심 질문을 한 번에 하나씩만 던져라.\n3. 내가 답변을 제출하면, 논리적 타당성과 결함을 짚어주고 다음 단계 퀴즈를 제시하라.\n4. 준비되었으면 나에게 첫 번째 질문을 던져라.`;
+            } else if (mode === 'critic') {
+                promptText = `[역할 정의]\n너는 까다롭고 회의적인 탑티어 VC 투자심사역이자 내부 감사팀장이다.\n칭찬이나 감언이설은 일절 생략하고, 오직 이 기획이 '현실에서 실패할 수밖에 없는 이유'만 집요하게 지적하라.\n\n[검토 대상]\n- 기획자 직무: ${role}\n- 기획 안건: ${topic}\n\n[요청 피드백]\n1. 이 기획에서 전제 자체가 틀렸거나 지나치게 낙관적인 부분 3가지\n2. 현장 실무자나 고객이 이 서비스를 거부할 구체적인 저항 사유\n3. 경영진 임원 회의에서 기획을 즉시 폐기시킬 수 있는 킬러 질문 3개`;
+            } else if (mode === 'vibe') {
+                promptText = `[역할 정의]\n너는 풀스택 프론트엔드 개발자이자 UI/UX 디자이너다.\n비개발자 기획자인 내가 제시하는 아이디어를 바탕으로, 브라우저에서 즉시 작동하는 React + Tailwind CSS 단일 파일 코드를 작성하라.\n\n[기획 내용]\n- 대상 직무: ${role}\n- 구현 서비스: ${topic}\n\n[구현 요구사항]\n1. 상태 변경이 즉시 반영되는 토글 버튼 및 카드 인터랙션\n2. 실시간 현황을 볼 수 있는 대시보드 지표 카드 4개\n3. 미니멀하고 세련된 Dark 모드 테마 디자인 적용`;
+            }
+
+            document.getElementById('prompt-output').textContent = promptText;
+        }
+
+        // Copy Prompt Functionality (Iframe-safe fallback)
+        function copyPromptOutput() {
+            const textToCopy = document.getElementById('prompt-output').textContent;
+            
+            // Create fallback textarea for iframe clipboard compatibility
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast('프롬프트가 성공적으로 복사되었습니다!');
+            } catch (err) {
+                showToast('복사에 실패했습니다. 직접 드래그하여 복사해주세요.');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // Toast System
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = msg;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // Demo Simulator Interactions
+        let alertCount = 0;
+        function toggleMachineStatus(element, name) {
+            const statusText = element.querySelector('.status-text');
+            const statusBadge = element.querySelector('.status-badge');
+
+            if (statusBadge.classList.contains('bg-emerald-500/20')) {
+                // Switch to Warning State
+                statusBadge.className = 'status-badge px-2 py-0.5 rounded text-[10px] bg-rose-500/20 text-rose-300 font-semibold';
+                statusBadge.textContent = '점검필요';
+                statusText.className = 'status-text text-[11px] text-rose-400';
+                statusText.textContent = '센서 오류 발생 (점검 요청)';
+                element.className = 'cursor-pointer bg-slate-900/60 hover:bg-slate-800/80 p-4 rounded-xl border border-rose-500/50 transition-all flex items-center justify-between';
+                showToast(`${name} 상태가 '점검 필요'로 업데이트 되었습니다.`);
+            } else {
+                // Switch back to Normal State
+                statusBadge.className = 'status-badge px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-semibold';
+                statusBadge.textContent = '가동중';
+                statusText.className = 'status-text text-[11px] text-emerald-400';
+                statusText.textContent = '정상 작동 중';
+                element.className = 'cursor-pointer bg-slate-900/60 hover:bg-slate-800/80 p-4 rounded-xl border border-emerald-500/30 transition-all flex items-center justify-between';
+                showToast(`${name} 상태가 '가동 중'으로 복구되었습니다.`);
+            }
+        }
+
+        function simulateAddAlert() {
+            alertCount++;
+            const alertEl = document.getElementById('demo-alert-count');
+            alertEl.textContent = `${alertCount} 건`;
+            alertEl.className = 'text-xl font-extrabold text-rose-400 mt-1 animate-pulse';
+            showToast('⚠️ 신규 기기 장애 경고 알림이 수신되었습니다!');
+        }
+
+        // Initialize Prompt Generator on Load
+        window.onload = function() {
+            generatePrompt();
+        };
+    </script>
+</body>
+</html>
